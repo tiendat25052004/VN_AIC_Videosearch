@@ -23,9 +23,12 @@ video_division_path = 'dict/video_division_tag.json'
 img2audio_json_path = 'dict/img_id2audio_id.json'
 
 VisualEncoder = VisualEncoding()
+print("ok1")
 CosineFaiss = MyFaiss(bin_clip_file, bin_clipv2_file,
                       json_path, audio_json_path, img2audio_json_path)
+print("ok2")
 TagRecommendation = tag_retrieval()
+print("ok3")
 DictImagePath = CosineFaiss.id2img_fps
 TotalIndexList = np.array(list(range(len(DictImagePath)))).astype('int64')
 print("Run 1")
