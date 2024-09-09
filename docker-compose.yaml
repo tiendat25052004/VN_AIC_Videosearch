@@ -25,6 +25,8 @@ services:
   client:
     build: ./frontend/ai
     restart: always
+    volumes:
+      - "./frontend/ai/public/data:/usr/share/nginx/html/public/data"
     ports:
       - "3000:80"
     depends_on:
