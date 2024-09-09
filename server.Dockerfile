@@ -4,12 +4,12 @@ FROM python:3.12
 WORKDIR /app/AIC2024
 
 # Install app dependencies
-COPY requirements.txt ./
+COPY requirements.txt /app/AIC2024/
 
 RUN pip install -r requirements.txt
 
 # Bundle app source
-COPY . .
+COPY . /app/AIC2024
 
 EXPOSE 8080
-CMD [ "python", "app.py" ]
+CMD [ "python3", "app.py" ]
