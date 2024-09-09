@@ -1,7 +1,7 @@
 FROM python:3.12
 
 # Create app directory
-WORKDIR /app
+WORKDIR /app/AIC2024
 
 # Install app dependencies
 COPY requirements.txt ./
