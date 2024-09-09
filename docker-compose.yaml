@@ -1,0 +1,38 @@
+version: "4.0"
+services:
+  app:
+    build: ./server.Dockerfile
+    restart: always
+    volumes:
+      - .:.
+    ports:
+      - "8080:8080"
+    expose:
+      - 8080
+  db:
+    build: ./db.Dockerfile
+    restart: always
+    volumes:
+      - .:.
+    ports:
+      - "5000:5000"
+    expose:
+      - 5000
+  server:
+    build: .
+    restart: always
+    ports:
+      - "3001:${PORT}"
+    volumes:
+      - ./src/v1/public:/usr/src/app/src/v1/public
+    depends_on:
+      - redis
+    links:
+      - redis
+  client:
+    build: ./frontend/ai
+    restart: always
+    ports:
+      - "3000:80"
+    depends_on:
+      - server

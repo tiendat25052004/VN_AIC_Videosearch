@@ -21,7 +21,7 @@ def GET_PROJECT_ROOT():
     while True:
         print(current_abspath)
 
-        if os.path.split(current_abspath)[1] == 'VN_Multi_User_Video_Search':
+        if os.path.split(current_abspath)[1] == 'AIC2024':
             project_root = current_abspath
             break
         else:
