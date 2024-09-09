@@ -22,11 +22,3 @@ services:
       - "5000:5000"
     expose:
       - 5000
-  client:
-    build: ./frontend/ai
-    restart: always
-    ports:
-      - "3000:80"
-    depends_on:
-      - app
-      - db
