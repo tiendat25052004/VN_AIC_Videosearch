@@ -23,7 +23,7 @@ function ImageList({
     if (feedbackMode && imgFeedback !== undefined) return "opacity-90";
     else return "group-hover:opacity-90";
   };
-
+  console.log(imagepath)
   return (
     <div
       className={`m-0.5 group duration-300 shrink-0 bg-slate-300 p-0.5 h-max  relative rounded-lg inline-flex relative mb-0.5

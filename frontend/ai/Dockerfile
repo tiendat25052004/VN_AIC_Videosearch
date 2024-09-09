@@ -9,7 +9,7 @@ COPY . .
 RUN npm i
 RUN npm run build
 
-# production stage
+production stage
 FROM nginx:stable-alpine as production-stage
 COPY default.conf /etc/nginx/conf.d/
 COPY nginx.conf /etc/nginx/nginx.conf
