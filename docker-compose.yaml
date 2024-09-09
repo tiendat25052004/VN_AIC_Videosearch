@@ -6,7 +6,7 @@ services:
       dockerfile: ./server.Dockerfile
     restart: always
     volumes:
-      - .:.
+      - .:/app
     ports:
       - "8080:8080"
     expose:
@@ -17,7 +17,7 @@ services:
       dockerfile: ./db.Dockerfile
     restart: always
     volumes:
-      - .:.
+      - .:/app
     ports:
       - "5000:5000"
     expose:
