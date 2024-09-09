@@ -11,7 +11,7 @@ from utils.context_encoding import VisualEncoding
 from utils.semantic_embed.tag_retrieval import tag_retrieval
 from utils.combine_utils import merge_searching_results_by_addition
 from utils.search_utils import group_result_by_video, search_by_filter
-
+from gevent.pywsgi import WSGIServer
 print("Starting server")
 
 json_path = 'dict/id2img_fps.json'
@@ -350,6 +350,10 @@ def translate():
     text_query_translated = CosineFaiss.translater(text_query)
     return jsonify(text_query_translated)
 
-
-print("Starting server2")
-app.run(port=8080, host='0.0.0.0')
+if __name__ == '__main__':
+    print("Starting server2")
+    # Debug/Development
+    # app.run(debug=True, host="0.0.0.0", port="5000")
+    # Production
+    http_server = WSGIServer(('', 8080), app)
+    http_server.serve_forever()
