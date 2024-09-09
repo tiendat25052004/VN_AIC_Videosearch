@@ -1,4 +1,4 @@
-FROM python:3.12
+FROM python:3.11
 
 # Create app directory
 WORKDIR /app/AIC2024

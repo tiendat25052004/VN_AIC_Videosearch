@@ -18,4 +18,3 @@ transformers
 scikit-learn
 open_clip_torch
 gevent
-geventwebsocket
