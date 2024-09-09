@@ -2,6 +2,7 @@ FROM python:3.12
 
 # Create app directory
 WORKDIR /app/AIC2024
+RUN apt-get update && apt-get install ffmpeg libsm6 libxext6  -y
 
 # Install app dependencies
 COPY requirements.txt /app/AIC2024/
