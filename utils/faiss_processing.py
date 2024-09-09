@@ -29,6 +29,7 @@ class MyFaiss:
         print("ok12")
         self.clip_model, _ = clip.load("ViT-B/16", device=self.__device)
         self.clipv2_model, _, _ = open_clip.create_model_and_transforms('ViT-L-14', device=self.__device, pretrained='datacomp_xl_s13b_b90k')
+        print("ok")
         self.clipv2_tokenizer = open_clip.get_tokenizer('ViT-L-14')
         print("ok123")
 
