@@ -350,10 +350,9 @@ def translate():
     text_query_translated = CosineFaiss.translater(text_query)
     return jsonify(text_query_translated)
 
-if __name__ == '__main__':
-    print("Starting server2")
-    # Debug/Development
-    # app.run(debug=True, host="0.0.0.0", port="5000")
-    # Production
-    http_server = WSGIServer(('', 8080), app)
-    http_server.serve_forever()
+print("Starting server2")
+# Debug/Development
+# app.run(debug=True, host="0.0.0.0", port="5000")
+# Production
+http_server = WSGIServer(('', 8080), app)
+http_server.serve_forever()
