@@ -28,7 +28,7 @@ CosineFaiss = MyFaiss(bin_clip_file, bin_clipv2_file,
 TagRecommendation = tag_retrieval()
 DictImagePath = CosineFaiss.id2img_fps
 TotalIndexList = np.array(list(range(len(DictImagePath)))).astype('int64')
-
+print("Run 1")
 with open(scene_path, 'r') as f:
     Sceneid2info = json.load(f)
 
@@ -41,7 +41,7 @@ with open('dict/map_keyframes.json', 'r') as f:
 with open('dict/video_id2img_id.json', 'r') as f:
     Videoid2imgid = json.load(f)
 
-
+print("Run 2")
 def get_search_space(id):
     # id starting from 1 to 4
     search_space = []
@@ -86,7 +86,7 @@ for i in range(1, 5):
     SearchSpace[i] = np.array(get_search_space(i)).astype('int64')
 SearchSpace[0] = TotalIndexList
 
-
+print("Run 3")
 def get_near_frame(idx):
     image_info = DictImagePath[idx]
     scene_idx = image_info['scene_idx'].split('/')
@@ -106,7 +106,7 @@ def get_related_ignore(ignore_index):
 app = Flask(__name__, template_folder='templates')
 CORS(app)
 
-
+print("Run 4")
 @app.route('/data')
 def index():
     pagefile = []
