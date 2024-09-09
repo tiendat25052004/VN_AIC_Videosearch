@@ -11,6 +11,7 @@ RUN pip install flask
 RUN pip install flask-cors
 RUN pip install flask-socketio
 RUN pip install pyngrok==4.1.1
+RUNNN pip install gevent-websocket
 # Bundle app source
 COPY . .
 

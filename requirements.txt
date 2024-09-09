@@ -17,4 +17,3 @@ sentence_transformers
 transformers
 scikit-learn
 open_clip_torch
-gevent
