@@ -15,4 +15,4 @@ RUN pip install pyngrok==4.1.1
 COPY . .
 
 EXPOSE 5000
-CMD [ "python", "appStorage.py" ]
+CMD [ "python3", "appStorage.py" ]
