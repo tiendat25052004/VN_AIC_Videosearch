@@ -12,7 +12,7 @@ def group_result_by_video(lst_scores, list_ids, list_image_paths, KeyframesMappe
         if 'extra' not in data_part:
             if len(key.split('_')) >= 3:
                 key = video_id.replace('_extra', '')
-            frame_id = KeyframesMapper[key][str(int(frame_id.split('.')[-1]))]
+            frame_id = KeyframesMapper[key][str(int(frame_id.split('.')[0]))]
 
         frame_id = int(frame_id.split('.')[0])
 
