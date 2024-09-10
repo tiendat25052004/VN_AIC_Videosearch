@@ -13,6 +13,7 @@ function ImageList({
   handleSelect,
   questionName
 }) {
+  imagepath = imagepath.split("/").slice(imagepath.split("/").length - 3).join("/");
   return (
     <div
       className={`m-0.5 flex-none bg-slate-300 group p-0.5 h-min inline-flex relative rounded-lg mb-0.5
@@ -22,7 +23,7 @@ function ImageList({
       <div className=" relative h-[167px] w-[300px]">
         <Image
           onDragStart={(e) => e.preventDefault()}
-          src={imagepath}
+          src={`http://20.6.129.131/Keyframes/${imagepath}`}
           // src={"/shoes.jpg"}
           fill={true}
           className=" relative rounded-md "

@@ -1,4 +1,5 @@
 import React from "react";
+import { web_url } from "../helper/web_url.js";
 import { AiOutlineSelect, AiFillLike, AiFillDislike } from "react-icons/ai";
 import { BsArrowsFullscreen, BsDatabaseAdd } from "react-icons/bs";
 import { BiFileFind, BiSolidVideos, BiHide } from "react-icons/bi";
@@ -23,7 +24,7 @@ function ImageList({
     if (feedbackMode && imgFeedback !== undefined) return "opacity-90";
     else return "group-hover:opacity-90";
   };
-  console.log(imagepath)
+  imagepath = imagepath.split("/").slice(imagepath.split("/").length - 3).join("/");
   return (
     <div
       className={`m-0.5 group duration-300 shrink-0 bg-slate-300 p-0.5 h-max  relative rounded-lg inline-flex relative mb-0.5
@@ -33,7 +34,7 @@ function ImageList({
     >
       <div className="group inline-flex relative h-[120px] w-[213px]">
         <Image
-          src={imagepath}
+          src={`http://20.6.129.131/Keyframes/${imagepath}`}
           // src={"/shoes.jpg"}
           fill={true}
           className=" duration-300 relative rounded-md"

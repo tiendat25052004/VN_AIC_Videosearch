@@ -12,6 +12,7 @@ function ImageList({
   handleSelect,
   addView
 }) {
+  imagepath = imagepath.split("/").slice(imagepath.split("/").length - 3).join("/");
   return (
     <div
       className={`m-0.5 group hover:ease-in-out group duration-300 shrink-0 bg-slate-300 p-0.5 h-max  relative rounded-lg inline-flex relative mb-0.5
@@ -20,7 +21,7 @@ function ImageList({
     >
       <div className="group inline-flex relative h-[167px] w-[300px]">
         <Image
-          src={imagepath}
+          src={`http://20.6.129.131/Keyframes/${imagepath}`}
           // src={"/shoes.jpg"}
           fill={true}
           className="hover:ease-in-out duration-300 relative rounded-md group-hover:opacity-80"

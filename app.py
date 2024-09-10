@@ -316,9 +316,9 @@ def get_video_shot():
                 '/data/KeyFrames/', '').replace('.webp', '').split('/')[-3:]
             key = f'{data_part}_{video_id}'.replace('_extra', '')
             if 'extra' not in data_part:
-                frame_id = KeyframesMapper[key][str(int(frame_id))]
+                frame_id = KeyframesMapper[key][str(int(frame_id.split('.')[0]))]
 
-            frame_id = int(frame_id.split('.')[0])
+            frame_id = int(str(frame_id).split('.')[0])
             lst_keyframe_idxs.append(frame_id)
         shots[shot_key]['lst_idxs'] = shots[shot_key]['lst_keyframe_idxs']
         shots[shot_key]['lst_keyframe_idxs'] = lst_keyframe_idxs
