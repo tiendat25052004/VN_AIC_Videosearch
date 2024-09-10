@@ -1,8 +1,8 @@
 //BACKEND
-export const web_url = "http://20.6.129.131:8080";
+export const web_url = "http://20.6.129.131/app";
 
 //SOCKET | DB SERVER
-export const socket_url = "http://20.6.129.131:5000";
+export const socket_url = "http://20.6.129.131/db";
 
 //COMPETITION SUBMISSION SEVER
 export const server = "";

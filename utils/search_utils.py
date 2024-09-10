@@ -10,6 +10,8 @@ def group_result_by_video(lst_scores, list_ids, list_image_paths, KeyframesMappe
             '/data/KeyFrames/', '').replace('.webp', '').split('/')[-3:]
         key = f'{data_part}_{video_id}'.replace('_extra', '')
         if 'extra' not in data_part:
+            if len(key.split('_')) >= 3:
+                key = video_id.replace('_extra', '')
             frame_id = KeyframesMapper[key][str(int(frame_id))]
 
         frame_id = int(frame_id.split('.')[0])
