@@ -26,7 +26,7 @@ class MyFaiss:
         self.img_id2audio_id = self.load_json_file(img2audio_json_path)
         self.translater = Translation()
         self.__device = "cuda" if torch.cuda.is_available() else "cpu"
-        print("ok12")
+        print(self.__device)
         self.clip_model, _ = clip.load("ViT-B/16", device=self.__device)
         print("ok13")
         self.clipv2_model, _, _ = open_clip.create_model_and_transforms('ViT-L-14', device=self.__device, pretrained='datacomp_xl_s13b_b90k')
