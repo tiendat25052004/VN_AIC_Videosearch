@@ -317,7 +317,7 @@ def get_video_shot():
             key = f'{data_part}_{video_id}'.replace('_extra', '')
             if 'extra' not in data_part:
                 if len(key.split('_')) >= 3:
-                key = video_id.replace('_extra', '')
+                    key = video_id.replace('_extra', '')
                 frame_id = KeyframesMapper[key][str(int(frame_id.split('.')[0]))]
 
             frame_id = int(str(frame_id).split('.')[0])
