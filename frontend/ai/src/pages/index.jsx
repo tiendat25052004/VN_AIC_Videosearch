@@ -217,6 +217,7 @@ function index() {
   const handleData = (data) => {
     setPage(0);
     deleteFeedback();
+
     setVideos(data);
     let ids = [];
     data.forEach((element) => {
@@ -613,6 +614,7 @@ function index() {
         setFullScreenImg={setFullScreenImg}
         relatedObj={relatedObj}
       />
+
       {Object.keys(infoDialog).length !== 0 && isShown && (
         <Info
           type={infoDialog.type}
@@ -962,35 +964,7 @@ function index() {
               )
               .map((video, indexVideo) => {
                 const video_info = video.video_info;
-                // const currentVideos = (
-                //   <VideoWrapper
-                //     id={video.video_id}
-                //     handleIgnore={() => handleIgnore(video_info.lst_idxs)}
-                //   >
-                //     {video_info.lst_keyframe_paths.map((path, index) => {
-                //       let id = video_info.lst_idxs[index];
-                //       return (
-                //         <ImageListVideo
-                //           imagepath={path}
-                //           id={id}
-                //           id_show={video_info.lst_keyframe_idxs[index]}
-                //           handleKNN={handleKNN}
-                //           handleSelect={handleSelect}
-                //           feedbackMode={feedbackMode}
-                //           handleFeedback={handleFeedback}
-                //           handleIgnore={handleIgnore}
-                //           imgFeedback={getImgFeedback(id)}
-                //           toggleFullScreen={() =>
-                //             toggleFullScreen({
-                //               imgpath: path,
-                //               id: id,
-                //             })
-                //           }
-                //         />
-                //       );
-                //     })}
-                //   </VideoWrapper>
-                // );
+
                 return "video_info_prev" in video ? (
                   <>
                     <VideoWrapper
@@ -999,6 +973,9 @@ function index() {
                       handleIgnore={() => handleIgnore(video_info.lst_idxs)}
                     >
                       {video_info.lst_keyframe_paths.map((path, index) => {
+
+                          path = path.split("/").slice(path.split("/").length - 3).join("/");
+
                         let id = video_info.lst_idxs[index];
                         return (
                           <ImageListVideo
@@ -1080,6 +1057,9 @@ function index() {
                       handleIgnore={() => handleIgnore(video_info.lst_idxs)}
                     >
                       {video_info.lst_keyframe_paths.map((path, index) => {
+                         path = path.split("/").slice(path.split("/").length - 3).join("/");
+
+
                         let id = video_info.lst_idxs[index];
                         return (
                           <ImageListVideo

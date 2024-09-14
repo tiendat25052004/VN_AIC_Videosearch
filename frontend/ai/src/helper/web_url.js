@@ -9,3 +9,5 @@ export const server = "";
 
 //SESSION ID FOR COMPETITION SUBMISSION SEVER
 export const session = "";
+
+export const azureServer = "http://20.6.129.131";
