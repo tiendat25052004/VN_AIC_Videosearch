@@ -28,8 +28,8 @@ class MyFaiss:
         self.__device = "cuda" if torch.cuda.is_available() else "cpu"
         print(self.__device)
         # self.clip_model, _ = clip.load("ViT-B/16", device=self.__device)
-        self.clip_model, _ = clip.load("ViT-L/14", device=self.__device)
-        # self.clip_model, _ = clip.load("ViT-L/14@336px", device=self.__device)
+        # self.clip_model, _ = clip.load("ViT-L/14", device=self.__device)
+        self.clip_model, _ = clip.load("ViT-L/14@336px", device=self.__device)
         print("ok13")
         # self.clipv2_model, _, _ = open_clip.create_model_and_transforms('ViT-L-14', device=self.__device, pretrained='datacomp_xl_s13b_b90k')
         self.clipv2_model, _, _ = open_clip.create_model_and_transforms('ViT-L-16-SigLIP-384', device=self.__device, pretrained='webli')
