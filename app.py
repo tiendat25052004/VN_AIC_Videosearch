@@ -200,56 +200,58 @@ def text_search():
         
     scores_map = dict()
     list_ids_dict = dict()
-    for query in queries:
-        print(query)
+    # for query in queries:
+        # print(query)
         # with open('temp.txt','a') as file:
         #     file.write(str(query))
-        if data['filtervideo'] != 0:
-            print('filter video')
-            mode = data['filtervideo']
-            prev_result = data['videos']
-            data = search_by_filter(prev_result, query, k, mode, model_type, range_filter,
-                                    ignore_index, keep_index, Sceneid2info, DictImagePath, CosineFaiss, KeyframesMapper)
+    if data['filtervideo'] != 0:
+        print('filter video')
+        mode = data['filtervideo']
+        prev_result = data['videos']
+        data = search_by_filter(prev_result, query, k, mode, model_type, range_filter,
+                                ignore_index, keep_index, Sceneid2info, DictImagePath, CosineFaiss, KeyframesMapper)
+    else:
+        if model_type == 'both':
+            scores_clip, list_clip_ids, _, _ = CosineFaiss.text_search(
+                query, index=index, k=k, model_type='clip')
+            scores_blip, list_blip_ids, _, _ = CosineFaiss.text_search(
+                query, index=index, k=k, model_type='blip')
+            lst_scores, list_ids = merge_searching_results_by_addition([scores_clip, scores_blip],
+                                                                    [list_clip_ids, list_blip_ids])
+            infos_query = list(map(CosineFaiss.id2img_fps.get, list(list_ids)))
+            list_image_paths = [info['image_path'] for info in infos_query]
         else:
-            if model_type == 'both':
-                scores_clip, list_clip_ids, _, _ = CosineFaiss.text_search(
-                    query, index=index, k=k, model_type='clip')
-                scores_blip, list_blip_ids, _, _ = CosineFaiss.text_search(
-                    query, index=index, k=k, model_type='blip')
-                lst_scores, list_ids = merge_searching_results_by_addition([scores_clip, scores_blip],
-                                                                        [list_clip_ids, list_blip_ids])
-                infos_query = list(map(CosineFaiss.id2img_fps.get, list(list_ids)))
-                list_image_paths = [info['image_path'] for info in infos_query]
-            else:
-                lst_scores, list_ids, _, list_image_paths = CosineFaiss.text_search(query, index=index, k=k, model_type=model_type)
+            lst_scores, list_ids, _, list_image_paths = CosineFaiss.text_search(query, index=index, k=k, model_type=model_type)
                 
         #tạo score map cho từng query
-        score_map_dict = dict()
-        distinct_frame_posittion = set()
+    #     score_map_dict = dict()
+    #     distinct_frame_posittion = set()
         
         
-        for i in range(k):
-            part = list_image_paths[i].split('/')[3].replace('_extra','')
-            video_id = list_image_paths[i].split('/')[4]
-            frame_id = list_image_paths[i].split('/')[5][:6]
+    #     for i in range(k):
+    #         part = list_image_paths[i].split('/')[3].replace('_extra','')
+    #         video_id = list_image_paths[i].split('/')[4]
+    #         frame_id = list_image_paths[i].split('/')[5][:6]
             
-            frame_posittion = find_split(part,video_id,frame_id)
+    #         frame_posittion = find_split(part,video_id,frame_id)
             
-            distinct_frame_posittion.add(frame_posittion)
-            score_map_dict[frame_posittion] = max(score_map_dict.get(frame_posittion,0),lst_scores[i])
-            list_ids_dict[frame_posittion] = list_ids[i]
+    #         distinct_frame_posittion.add(frame_posittion)
+    #         score_map_dict[frame_posittion] = max(score_map_dict.get(frame_posittion,0),lst_scores[i])
+    #         list_ids_dict[frame_posittion] = list_ids[i]
         
         
-        for x in distinct_frame_posittion:
-            scores_map[x] = scores_map.get(x,0) + score_map_dict[x]
+    #     for x in distinct_frame_posittion:
+    #         scores_map[x] = scores_map.get(x,0) + score_map_dict[x]
             
-    data = group_result_by_video(
-        lst_scores, list_ids, list_image_paths, 
-        KeyframesMapper,
-        scores_map,
-        list_ids_dict,
-        scene_map_dict)
-
+    # data = group_result_by_video(
+    #     lst_scores, list_ids, list_image_paths, 
+    #     KeyframesMapper,
+    #     scores_map,
+    #     list_ids_dict,
+    #     scene_map_dict)
+    
+    data = group_result_by_video_old(
+        lst_scores, list_ids, list_image_paths, KeyframesMapper)
     return jsonify(data)
 
 
