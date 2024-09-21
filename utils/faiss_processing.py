@@ -35,8 +35,8 @@ class MyFaiss:
         self.clipv2_model, _, _ = open_clip.create_model_and_transforms('ViT-L-16-SigLIP-384', device=self.__device, pretrained='webli')
         # self.clipv2_model, _, _ = open_clip.create_model_and_transforms('ViT-H-14-378-quickgelu', device=self.__device, pretrained='dfn5b')
         print("ok")
-        self.clipv2_tokenizer = open_clip.get_tokenizer('ViT-L-14')
-        # self.clipv2_tokenizer = open_clip.get_tokenizer('ViT-L-16-SigLIP-384')
+        # self.clipv2_tokenizer = open_clip.get_tokenizer('ViT-L-14')
+        self.clipv2_tokenizer = open_clip.get_tokenizer('ViT-L-16-SigLIP-384')
         # self.clipv2_tokenizer = open_clip.get_tokenizer('ViT-H-14-378-quickgelu')
         print("ok123")
 

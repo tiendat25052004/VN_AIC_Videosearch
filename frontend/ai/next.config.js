@@ -5,7 +5,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'http',
-        hostname: '20.6.129.131',
+        hostname: '104.214.176.95',
         port: '',
         pathname: '/Keyframes/**',
       },

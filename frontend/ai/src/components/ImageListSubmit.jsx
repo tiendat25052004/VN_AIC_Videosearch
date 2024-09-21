@@ -23,7 +23,7 @@ function ImageList({
       <div className=" relative h-[167px] w-[300px]">
         <Image
           onDragStart={(e) => e.preventDefault()}
-          src={`http://20.6.129.131/Keyframes/${imagepath}`}
+          src={`http://104.214.176.95/Keyframes/${imagepath}`}
           // src={"/shoes.jpg"}
           fill={true}
           className=" relative rounded-md "

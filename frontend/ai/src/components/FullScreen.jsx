@@ -19,7 +19,7 @@ function FullScreen({fullScreenImg, setFullScreenImg, relatedObj}) {
         >
           <div className="relative w-[1000px] h-[562px] rounded-md">
             <Image
-              src={`http://20.6.129.131/Keyframes/${fullScreenImg.imgpath}`}
+              src={`http://104.214.176.95/Keyframes/${fullScreenImg.imgpath}`}
               fill={true}
               className="rounded-md opacity-100"
             />

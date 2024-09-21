@@ -21,7 +21,7 @@ function ImageList({
     >
       <div className="group inline-flex relative h-[167px] w-[300px]">
         <Image
-          src={`http://20.6.129.131/Keyframes/${imagepath}`}
+          src={`http://104.214.176.95/Keyframes/${imagepath}`}
           // src={"/shoes.jpg"}
           fill={true}
           className="hover:ease-in-out duration-300 relative rounded-md group-hover:opacity-80"

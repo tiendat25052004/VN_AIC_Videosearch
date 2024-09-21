@@ -26,7 +26,7 @@ function ImageListvideoPanel({
     >
       <div className="group inline-flex relative h-[120px] w-[213px]">
         <Image
-          src={`http://20.6.129.131/Keyframes/${imagepath}`}
+          src={`http://104.214.176.95/Keyframes/${imagepath}`}
           fill={true}
           className="  duration-300 relative rounded-md"
           
