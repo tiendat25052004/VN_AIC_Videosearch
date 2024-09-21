@@ -15,10 +15,9 @@ from utils.semantic_embed.speech_retrieval import speech_retrieval
 from utils.object_retrieval_engine.object_retrieval import object_retrieval
 
 class MyFaiss:
-    def __init__(self, bin_clip_file: str, bin_clipv2_file: str, bin_blip_file: str, json_path: str, audio_json_path:str, img2audio_json_path:str):    
+    def __init__(self, bin_clip_file: str, bin_blip_file: str, json_path: str, audio_json_path:str, img2audio_json_path:str):    
         self.index_clip = self.load_bin_file(bin_clip_file)
         self.index_blip = self.load_bin_file(bin_blip_file)
-        self.index_clipv2 = self.load_bin_file(bin_clipv2_file)
         self.object_retrieval = object_retrieval()
         self.ocr_retrieval = ocr_retrieval()
         self.asr_retrieval = speech_retrieval()
@@ -35,13 +34,13 @@ class MyFaiss:
         self.blip_model, self.vis_processors, self.txt_processors = load_model_and_preprocess(name="blip_feature_extractor", model_type="base", is_eval=True, device=self.__device)
         print("ok13")
         # self.clipv2_model, _, _ = open_clip.create_model_and_transforms('ViT-L-14', device=self.__device, pretrained='datacomp_xl_s13b_b90k')
-        self.clipv2_model, _, _ = open_clip.create_model_and_transforms('ViT-L-16-SigLIP-384', device=self.__device, pretrained='webli')
+        # self.clipv2_model, _, _ = open_clip.create_model_and_transforms('ViT-L-16-SigLIP-384', device=self.__device, pretrained='webli')
         # self.clipv2_model, _, _ = open_clip.create_model_and_transforms('ViT-H-14-378-quickgelu', device=self.__device, pretrained='dfn5b')
-        print("ok")
+        # print("ok")
         # self.clipv2_tokenizer = open_clip.get_tokenizer('ViT-L-14')
-        self.clipv2_tokenizer = open_clip.get_tokenizer('ViT-L-16-SigLIP-384')
+        # self.clipv2_tokenizer = open_clip.get_tokenizer('ViT-L-16-SigLIP-384')
         # self.clipv2_tokenizer = open_clip.get_tokenizer('ViT-H-14-378-quickgelu')
-        print("ok123")
+        # print("ok123")
 
     def load_json_file(self, json_path: str):
       with open(json_path, 'r') as f: 
@@ -73,10 +72,7 @@ class MyFaiss:
             text = txt_processors["eval"](text)
             sample = {"text_input": [text]}
             text_features = model.extract_features(sample, mode="text").text_embeds_proj[:,0,:]
-        else:
-            text = self.clipv2_tokenizer([text]).to(self.__device)  
-            text_features = self.clipv2_model.encode_text(text)
-        if model_type != 'blip':
+        if model_type == 'clip':
             text_features /= text_features.norm(dim=-1, keepdim=True)
         text_features = text_features.cpu().detach().numpy().astype(np.float32)
 
@@ -85,8 +81,6 @@ class MyFaiss:
             index_choosed = self.index_clip
         elif model_type == 'blip':
             index_choosed = self.index_blip
-        else:
-            index_choosed = self.index_clipv2
         
         if index is None:
           scores, idx_image = index_choosed.search(text_features, k=k)

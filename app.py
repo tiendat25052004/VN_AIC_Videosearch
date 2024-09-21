@@ -19,14 +19,13 @@ json_path = 'dict/id2img_fps.json'
 audio_json_path = 'dict/audio_id2img_id.json'
 scene_path = 'dict/scene_id2info.json'
 bin_clip_file = 'dict/v9/faiss_clip.bin'
-bin_clipv2_file = 'dict/v9/faiss_clipv2_cosine.bin'
 bin_blip_file = 'dict/v9/faiss_blip.bin'
 video_division_path = 'dict/video_division_tag.json'
 img2audio_json_path = 'dict/img_id2audio_id.json'
 
 VisualEncoder = VisualEncoding()
 print("ok1")
-CosineFaiss = MyFaiss(bin_clip_file, bin_clipv2_file, bin_blip_file,
+CosineFaiss = MyFaiss(bin_clip_file, bin_blip_file,
                       json_path, audio_json_path, img2audio_json_path)
 print("ok2")
 TagRecommendation = tag_retrieval()
@@ -160,7 +159,6 @@ def text_search():
     search_space_index = int(data['search_space'])
     k = int(data['k'])
     clip = data['clip']
-    clipv2 = data['clipv2']
     blip = data['blip']
     blip = True
     text_query = data['textquery']
@@ -193,14 +191,12 @@ def text_search():
         index = np.intersect1d(index, SearchSpace[search_space_index])
     k = min(k, len(index))
 
-    if clip and clipv2:
+    if clip and blip:
         model_type = 'both'
     elif blip:
         model_type = 'blip'
     elif clip:
         model_type = 'clip'
-    else:
-        model_type = 'clipv2'
         
     scores_map = dict()
     list_ids_dict = dict()
@@ -218,10 +214,10 @@ def text_search():
             if model_type == 'both':
                 scores_clip, list_clip_ids, _, _ = CosineFaiss.text_search(
                     query, index=index, k=k, model_type='clip')
-                scores_clipv2, list_clipv2_ids, _, _ = CosineFaiss.text_search(
-                    query, index=index, k=k, model_type='clipv2')
-                lst_scores, list_ids = merge_searching_results_by_addition([scores_clip, scores_clipv2],
-                                                                        [list_clip_ids, list_clipv2_ids])
+                scores_blip, list_blip_ids, _, _ = CosineFaiss.text_search(
+                    query, index=index, k=k, model_type='blip')
+                lst_scores, list_ids = merge_searching_results_by_addition([scores_clip, scores_blip],
+                                                                        [list_clip_ids, list_blip_ids])
                 infos_query = list(map(CosineFaiss.id2img_fps.get, list(list_ids)))
                 list_image_paths = [info['image_path'] for info in infos_query]
             else:

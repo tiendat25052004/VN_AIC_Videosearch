@@ -165,7 +165,7 @@ def search_by_filter(prev_result, text_query, k, mode, model_type, range_filter,
         scores_clip, list_clip_ids, _, _ = CosineFaiss.text_search(
             text_query, index=filter_idx, k=k, model_type='clip')
         scores_clipv2, list_clipv2_ids, _, _ = CosineFaiss.text_search(
-            text_query, index=filter_idx, k=k, model_type='clipv2')
+            text_query, index=filter_idx, k=k, model_type='blip')
         lst_scores, list_ids = merge_searching_results_by_addition([scores_clip, scores_clipv2],
                                                                    [list_clip_ids, list_clipv2_ids])
         infos_query = list(map(CosineFaiss.id2img_fps.get, list(list_ids)))
