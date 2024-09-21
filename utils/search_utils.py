@@ -11,7 +11,7 @@ def group_result_by_video(lst_scores, list_ids,
     
     for i,key in enumerate(scores_map.keys()):
         data_part, video_id, frame_id = key.split('_')
-        
+        key = f'{data_part}_{video_id}'.replace('_extra', '')
         if not result_dict.get(key, False):
             result_dict[key] = {
                 'lst_keyframe_paths': [],
