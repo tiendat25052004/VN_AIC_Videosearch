@@ -11,9 +11,9 @@ def group_result_by_video(lst_scores, list_ids,
     
     for i,key in enumerate(scores_map.keys()):
         data_part, video_id, frame_id = key.split('_')
-        key = f'{data_part}_{video_id}'.replace('_extra', '')
-        if not result_dict.get(key, False):
-            result_dict[key] = {
+        save_key = f'{data_part}_{video_id}'.replace('_extra', '')
+        if not result_dict.get(save_key, False):
+            result_dict[save_key] = {
                 'lst_keyframe_paths': [],
                 'lst_idxs': [],
                 'lst_keyframe_idxs': [],
@@ -23,10 +23,10 @@ def group_result_by_video(lst_scores, list_ids,
         image_path = f'/data/Keyframes/{data_part}_extra/{video_id}/{frame_id}.jpg'
         list_id = list_ids_dict[key]
         scores = scores_map[key]
-        result_dict[key]['lst_keyframe_paths'].append(image_path)
-        result_dict[key]['lst_idxs'].append(int(list_id))
-        result_dict[key]['lst_keyframe_idxs'].append(frame_id)
-        result_dict[key]['lst_scores'].append(float(scores))
+        result_dict[save_key]['lst_keyframe_paths'].append(image_path)
+        result_dict[save_key]['lst_idxs'].append(int(list_id))
+        result_dict[save_key]['lst_keyframe_idxs'].append(frame_id)
+        result_dict[save_key]['lst_scores'].append(float(scores))
 
         
     # for i, image_path in enumerate(list_image_paths):
