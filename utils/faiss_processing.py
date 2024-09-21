@@ -69,9 +69,9 @@ class MyFaiss:
             text = clip.tokenize([text]).to(self.__device)  
             text_features = self.clip_model.encode_text(text)
         elif model_type == 'blip':
-            text = txt_processors["eval"](text)
+            text = self.txt_processors["eval"](text)
             sample = {"text_input": [text]}
-            text_features = model.extract_features(sample, mode="text").text_embeds_proj[:,0,:]
+            text_features = self.blip_model.extract_features(sample, mode="text").text_embeds_proj[:,0,:]
         if model_type == 'clip':
             text_features /= text_features.norm(dim=-1, keepdim=True)
         text_features = text_features.cpu().detach().numpy().astype(np.float32)

@@ -37,7 +37,7 @@ function index() {
   const [filter, setFilter] = useState(false);
   const [loading, setLoading] = useState(false);
   const [clip, setClip] = useState(false);
-  const [clipv2, setClipv2] = useState(true);
+  const [blip, setblip] = useState(true);
   const [recTags, setRecTags] = useState([]);
   const [fullScreenImg, setFullScreenImg] = useState(null);
   const [queryHistory, setQueryHistory] = useState([]);
@@ -243,7 +243,7 @@ function index() {
         textquery: query,
         filtervideo: filtervideo,
         clip: clip,
-        clipv2: clipv2,
+        blip: blip,
         filter: filter,
         id: id,
         k: k,
@@ -535,7 +535,7 @@ function index() {
               textquery: query,
               filtervideo: filtervideo,
               clip: clip,
-              clipv2: clipv2,
+              blip: blip,
               filter: filter,
               id: id,
               k: k,
@@ -813,23 +813,23 @@ function index() {
               </label>
             </div>
             <div
-              id="clipv2"
+              id="blip"
               className="flex items-center text-orange-500 rounded-md"
             >
               <input
-                checked={clipv2}
+                checked={blip}
                 onChange={(e) => {
-                  setClipv2(e.target.checked);
+                  setblip(e.target.checked);
                 }}
-                id="Clipv2"
+                id="blip"
                 type="checkbox"
                 className="cursor-pointer rounded-md duration-200 w-5 h-5 accent-orange-700/75 text-red-500 rounded hover:ring-orange-300 hover:ring-2"
               />
               <label
-                htmlFor="Clipv2"
+                htmlFor="blip"
                 className="cursor-pointer pl-0.5 text-slate-300"
               >
-                <span className="text-orange-400">v2</span>
+                <span className="text-orange-400">Blip</span>
               </label>
             </div>
             <div className="h-fit w-fit flex flex-col relative">
