@@ -161,8 +161,7 @@ def text_search():
     clip = data['clip']
     blip = data['blip']
     blip = True
-    text_query = data['textquery']
-    queries = text_query.split('@')
+    query = data['textquery']
     
     range_filter = int(data['range_filter'])
     index = None
