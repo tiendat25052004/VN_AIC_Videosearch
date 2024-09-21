@@ -61,6 +61,38 @@ def group_result_by_video(lst_scores, list_ids,
 
     return result
 
+def group_result_by_video_old(lst_scores, list_ids, list_image_paths, KeyframesMapper):
+    result_dict = dict()
+    for i, image_path in enumerate(list_image_paths):
+        data_part, video_id, frame_id = image_path.replace(
+            '/data/KeyFrames/', '').replace('.webp', '').split('/')[-3:]
+        key = f'{data_part}_{video_id}'.replace('_extra', '')
+        if 'extra' not in data_part:
+            if len(key.split('_')) >= 3:
+                key = video_id.replace('_extra', '')
+            frame_id = KeyframesMapper[key][str(int(frame_id.split('.')[0]))]
+
+        frame_id = int(str(frame_id).split('.')[0])
+
+        if not result_dict.get(key, False):
+            result_dict[key] = {
+                'lst_keyframe_paths': [],
+                'lst_idxs': [],
+                'lst_keyframe_idxs': [],
+                'lst_scores': []
+            }
+
+        result_dict[key]['lst_keyframe_paths'].append(image_path)
+        result_dict[key]['lst_idxs'].append(int(list_ids[i]))
+        result_dict[key]['lst_keyframe_idxs'].append(frame_id)
+        result_dict[key]['lst_scores'].append(float(lst_scores[i]))
+
+    result = [{'video_id': key, 'video_info': value}
+              for key, value in result_dict.items()]
+    result = sorted(
+        result, key=lambda x: x['video_info']['lst_scores'][0], reverse=True)
+
+    return result
 
 def search_by_filter(prev_result, text_query, k, mode, model_type, range_filter, ignore_index, keep_index, Sceneid2info, DictImagePath, CosineFaiss, KeyframesMapper):
     ignore_videos = None

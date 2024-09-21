@@ -10,7 +10,7 @@ from utils.faiss_processing import MyFaiss
 from utils.context_encoding import VisualEncoding
 from utils.semantic_embed.tag_retrieval import tag_retrieval
 from utils.combine_utils import merge_searching_results_by_addition
-from utils.search_utils import group_result_by_video, search_by_filter
+from utils.search_utils import group_result_by_video, search_by_filter, group_result_by_video_old
 from gevent.pywsgi import WSGIServer
 import glob
 print("Starting server")
@@ -145,7 +145,7 @@ def image_search():
     lst_scores, list_ids, _, list_image_paths = CosineFaiss.image_search(
         id_query, k=k)
     
-    data = group_result_by_video(
+    data = group_result_by_video_old(
         lst_scores, list_ids, list_image_paths, KeyframesMapper)
 
     return jsonify(data)
@@ -300,7 +300,7 @@ def panel():
     lst_scores, list_ids, _, list_image_paths = CosineFaiss.context_search(object_input=object_input, ocr_input=ocr_input, asr_input=asr_input,
                                                                            k=k, semantic=semantic, keyword=keyword, index=index, useid=search_items['useid'])
 
-    data = group_result_by_video(
+    data = group_result_by_video_old(
         lst_scores, list_ids, list_image_paths, KeyframesMapper)
     return jsonify(data)
 
@@ -390,7 +390,7 @@ def feed_back():
     lst_neg_vote_idxs = data['lst_neg_idxs']
     lst_scores, list_ids, _, list_image_paths = CosineFaiss.reranking(
         prev_result, lst_pos_vote_idxs, lst_neg_vote_idxs, k)
-    data = group_result_by_video(
+    data = group_result_by_video_old(
         lst_scores, list_ids, list_image_paths, KeyframesMapper)
     return jsonify(data)
 
