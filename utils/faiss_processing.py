@@ -61,7 +61,7 @@ class MyFaiss:
 
     def text_search(self, text, index, k, model_type):
         text = self.translater(text)
-
+        
         ###### TEXT FEATURES EXTRACTING ######
         if model_type == 'clip':
             text = clip.tokenize([text]).to(self.__device)  

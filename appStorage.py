@@ -181,7 +181,7 @@ def check_ignore():
 
 @socketio.on("submit")
 def submit(data):
-    print("submit")
+    print("submit")x
     ques_name = data["questionName"]
     ques_idx = int(data["idx"])
     user = data["user"]

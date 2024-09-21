@@ -3,19 +3,15 @@ import numpy as np
 from utils.combine_utils import merge_searching_results_by_addition
 
 
-def group_result_by_video(lst_scores, list_ids, list_image_paths, KeyframesMapper):
+def group_result_by_video(lst_scores, list_ids, 
+                          list_image_paths, KeyframesMapper,
+                          scores_map, list_ids_dict, 
+                          scene_map_dict):
     result_dict = dict()
-    for i, image_path in enumerate(list_image_paths):
-        data_part, video_id, frame_id = image_path.replace(
-            '/data/KeyFrames/', '').replace('.webp', '').split('/')[-3:]
-        key = f'{data_part}_{video_id}'.replace('_extra', '')
-        if 'extra' not in data_part:
-            if len(key.split('_')) >= 3:
-                key = video_id.replace('_extra', '')
-            frame_id = KeyframesMapper[key][str(int(frame_id.split('.')[0]))]
-
-        frame_id = int(str(frame_id).split('.')[0])
-
+    
+    for i,key in enumerate(scores_map.keys()):
+        data_part, video_id, frame_id = key.split('_')
+        
         if not result_dict.get(key, False):
             result_dict[key] = {
                 'lst_keyframe_paths': [],
@@ -23,11 +19,39 @@ def group_result_by_video(lst_scores, list_ids, list_image_paths, KeyframesMappe
                 'lst_keyframe_idxs': [],
                 'lst_scores': []
             }
-
+        
+        image_path = f'/data/Keyframes/{data_part}_extra/{video_id}/{frame_id}.jpg'
+        list_id = list_ids_dict[key]
+        scores = scores_map[key]
         result_dict[key]['lst_keyframe_paths'].append(image_path)
-        result_dict[key]['lst_idxs'].append(int(list_ids[i]))
+        result_dict[key]['lst_idxs'].append(int(list_id))
         result_dict[key]['lst_keyframe_idxs'].append(frame_id)
-        result_dict[key]['lst_scores'].append(float(lst_scores[i]))
+        result_dict[key]['lst_scores'].append(float(scores))
+
+        
+    # for i, image_path in enumerate(list_image_paths):
+    #     data_part, video_id, frame_id = image_path.replace(
+    #         '/data/KeyFrames/', '').replace('.webp', '').split('/')[-3:]
+    #     key = f'{data_part}_{video_id}'.replace('_extra', '')
+    #     if 'extra' not in data_part:
+    #         if len(key.split('_')) >= 3:
+    #             key = video_id.replace('_extra', '')
+    #         frame_id = KeyframesMapper[key][str(int(frame_id.split('.')[0]))]
+
+    #     frame_id = int(str(frame_id).split('.')[0])
+
+    #     if not result_dict.get(key, False):
+    #         result_dict[key] = {
+    #             'lst_keyframe_paths': [],
+    #             'lst_idxs': [],
+    #             'lst_keyframe_idxs': [],
+    #             'lst_scores': []
+    #         }
+
+    #     result_dict[key]['lst_keyframe_paths'].append(image_path)
+    #     result_dict[key]['lst_idxs'].append(int(list_ids[i]))
+    #     result_dict[key]['lst_keyframe_idxs'].append(frame_id)
+    #     result_dict[key]['lst_scores'].append(float(lst_scores[i]))
 
     result = [{'video_id': key, 'video_info': value}
               for key, value in result_dict.items()]

@@ -12,6 +12,7 @@ from utils.semantic_embed.tag_retrieval import tag_retrieval
 from utils.combine_utils import merge_searching_results_by_addition
 from utils.search_utils import group_result_by_video, search_by_filter
 from gevent.pywsgi import WSGIServer
+import glob
 print("Starting server")
 
 json_path = 'dict/id2img_fps.json'
@@ -43,6 +44,21 @@ with open('dict/map_keyframes.json', 'r') as f:
 
 with open('dict/video_id2img_id.json', 'r') as f:
     Videoid2imgid = json.load(f)
+
+# Đọc scene
+scene_map_dict = dict()
+for part in glob.glob('dict/SceneJSON/*'):
+    for video_path in glob.glob(f'{part}/*'):
+        with open(video_path,'r') as file:
+            scene_map_dict[f'{part[-3:]}_{video_path[-9:-5]}'] = json.loads(''.join(file.readlines()))
+
+def find_split(part,video_id,frame):
+    lst = scene_map_dict[f'{part}_{video_id}']
+    for i in lst:
+        if int(frame) >= int(i[0]) and int(frame) <= int(i[1]):
+            frame_id = str(i[0])
+            frame_id = '0'*(6-len(frame_id)) + frame_id
+            return f'{part}_{video_id}_{frame_id}'
 
 print("Run 2")
 def get_search_space(id):
@@ -128,7 +144,7 @@ def image_search():
     id_query = int(request.args.get('imgid'))
     lst_scores, list_ids, _, list_image_paths = CosineFaiss.image_search(
         id_query, k=k)
-
+    
     data = group_result_by_video(
         lst_scores, list_ids, list_image_paths, KeyframesMapper)
 
@@ -145,8 +161,9 @@ def text_search():
     clip = data['clip']
     clipv2 = data['clipv2']
     text_query = data['textquery']
+    queries = text_query.split('@')
+    
     range_filter = int(data['range_filter'])
-
     index = None
     if data['filter']:
         index = np.array(data['id']).astype('int64')
@@ -179,28 +196,58 @@ def text_search():
         model_type = 'clip'
     else:
         model_type = 'clipv2'
-
-    if data['filtervideo'] != 0:
-        print('filter video')
-        mode = data['filtervideo']
-        prev_result = data['videos']
-        data = search_by_filter(prev_result, text_query, k, mode, model_type, range_filter,
-                                ignore_index, keep_index, Sceneid2info, DictImagePath, CosineFaiss, KeyframesMapper)
-    else:
-        if model_type == 'both':
-            scores_clip, list_clip_ids, _, _ = CosineFaiss.text_search(
-                text_query, index=index, k=k, model_type='clip')
-            scores_clipv2, list_clipv2_ids, _, _ = CosineFaiss.text_search(
-                text_query, index=index, k=k, model_type='clipv2')
-            lst_scores, list_ids = merge_searching_results_by_addition([scores_clip, scores_clipv2],
-                                                                       [list_clip_ids, list_clipv2_ids])
-            infos_query = list(map(CosineFaiss.id2img_fps.get, list(list_ids)))
-            list_image_paths = [info['image_path'] for info in infos_query]
+        
+    scores_map = dict()
+    list_ids_dict = dict()
+    for query in queries:
+        print(query)
+        # with open('temp.txt','a') as file:
+        #     file.write(str(query))
+        if data['filtervideo'] != 0:
+            print('filter video')
+            mode = data['filtervideo']
+            prev_result = data['videos']
+            data = search_by_filter(prev_result, query, k, mode, model_type, range_filter,
+                                    ignore_index, keep_index, Sceneid2info, DictImagePath, CosineFaiss, KeyframesMapper)
         else:
-            lst_scores, list_ids, _, list_image_paths = CosineFaiss.text_search(
-                text_query, index=index, k=k, model_type=model_type)
-        data = group_result_by_video(
-            lst_scores, list_ids, list_image_paths, KeyframesMapper)
+            if model_type == 'both':
+                scores_clip, list_clip_ids, _, _ = CosineFaiss.text_search(
+                    query, index=index, k=k, model_type='clip')
+                scores_clipv2, list_clipv2_ids, _, _ = CosineFaiss.text_search(
+                    query, index=index, k=k, model_type='clipv2')
+                lst_scores, list_ids = merge_searching_results_by_addition([scores_clip, scores_clipv2],
+                                                                        [list_clip_ids, list_clipv2_ids])
+                infos_query = list(map(CosineFaiss.id2img_fps.get, list(list_ids)))
+                list_image_paths = [info['image_path'] for info in infos_query]
+            else:
+                lst_scores, list_ids, _, list_image_paths = CosineFaiss.text_search(query, index=index, k=k, model_type=model_type)
+                
+        #tạo score map cho từng query
+        score_map_dict = dict()
+        distinct_frame_posittion = set()
+        
+        
+        for i in range(k):
+            part = list_image_paths[i].split('/')[3].replace('_extra','')
+            video_id = list_image_paths[i].split('/')[4]
+            frame_id = list_image_paths[i].split('/')[5][:6]
+            
+            frame_posittion = find_split(part,video_id,frame_id)
+            
+            distinct_frame_posittion.add(frame_posittion)
+            score_map_dict[frame_posittion] = max(score_map_dict.get(frame_posittion,0),lst_scores[i])
+            list_ids_dict[frame_posittion] = list_ids[i]
+        
+        
+        for x in distinct_frame_posittion:
+            scores_map[x] = scores_map.get(x,0) + score_map_dict[x]
+            
+    data = group_result_by_video(
+        lst_scores, list_ids, list_image_paths, 
+        KeyframesMapper,
+        scores_map,
+        list_ids_dict,
+        scene_map_dict)
 
     return jsonify(data)
 
@@ -311,7 +358,7 @@ def get_video_shot():
     for shot_key in shots.keys():
         lst_keyframe_idxs = []
         for img_path in shots[shot_key]['lst_keyframe_paths']:
-            print(img_path)
+            # print(img_path)
             data_part, video_id, frame_id = img_path.replace(
                 '/data/KeyFrames/', '').replace('.webp', '').split('/')[-3:]
             key = f'{data_part}_{video_id}'.replace('_extra', '')
