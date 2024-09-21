@@ -72,8 +72,7 @@ class MyFaiss:
             text = self.txt_processors["eval"](text)
             sample = {"text_input": [text]}
             text_features = self.blip_model.extract_features(sample, mode="text").text_embeds_proj[:,0,:]
-        if model_type == 'clip':
-            text_features /= text_features.norm(dim=-1, keepdim=True)
+        text_features /= text_features.norm(dim=-1, keepdim=True)
         text_features = text_features.cpu().detach().numpy().astype(np.float32)
 
         ###### SEARCHING #####
