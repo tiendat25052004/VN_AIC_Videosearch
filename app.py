@@ -357,7 +357,7 @@ def translate():
 
 print("Starting server2")
 # Debug/Development
-app.run(host="0.0.0.0", port="8080")
+# app.run(host="0.0.0.0", port="8080")
 # Production
-# http_server = WSGIServer(('', 8080), app)
-# http_server.serve_forever()
+http_server = WSGIServer(('', 8080), app)
+http_server.serve_forever()
