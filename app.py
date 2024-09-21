@@ -45,6 +45,7 @@ with open('dict/map_keyframes.json', 'r') as f:
 with open('dict/video_id2img_id.json', 'r') as f:
     Videoid2imgid = json.load(f)
 
+# Đọc scene
 scene_map_dict = dict()
 for part in glob.glob('dict/SceneJSON/*'):
     for video_path in glob.glob(f'{part}/*'):
@@ -143,32 +144,9 @@ def image_search():
     id_query = int(request.args.get('imgid'))
     lst_scores, list_ids, _, list_image_paths = CosineFaiss.image_search(
         id_query, k=k)
-
-    score_map_dict = dict()
-    distinct_frame_posittion = set()
     
-    for i in range(k):
-        part = list_image_paths[i].split('/')[3].replace('_extra','')
-        video_id = list_image_paths[i].split('/')[4]
-        frame_id = list_image_paths[i].split('/')[5][:6]
-        frame_posittion = find_split(part,video_id,frame_id)
-        distinct_frame_posittion.add(frame_posittion)
-        score_map_dict[frame_posittion] = max(score_map_dict.get(frame_posittion,0),lst_scores[i])
-        list_ids_dict[frame_posittion] = list_ids[i]
-    
-    
-    for x in distinct_frame_posittion:
-        scores_map[x] = scores_map.get(x,0) + score_map_dict[x]
-            
     data = group_result_by_video(
-        lst_scores, list_ids, list_image_paths, 
-        KeyframesMapper,
-        scores_map,
-        list_ids_dict,
-        scene_map_dict)
-    
-    # data = group_result_by_video(
-    #     lst_scores, list_ids, list_image_paths, KeyframesMapper)
+        lst_scores, list_ids, list_image_paths, KeyframesMapper)
 
     return jsonify(data)
 
@@ -244,18 +222,18 @@ def text_search():
             else:
                 lst_scores, list_ids, _, list_image_paths = CosineFaiss.text_search(query, index=index, k=k, model_type=model_type)
                 
-        # with open('temp.txt','w') as file:
-        #     file.write(str(lst_scores[:10]))
-            # file.write(str(list_ids[:10])) 
-            # file.write(str(list_image_paths[:10]))     
+        #tạo score map cho từng query
         score_map_dict = dict()
         distinct_frame_posittion = set()
+        
         
         for i in range(k):
             part = list_image_paths[i].split('/')[3].replace('_extra','')
             video_id = list_image_paths[i].split('/')[4]
             frame_id = list_image_paths[i].split('/')[5][:6]
+            
             frame_posittion = find_split(part,video_id,frame_id)
+            
             distinct_frame_posittion.add(frame_posittion)
             score_map_dict[frame_posittion] = max(score_map_dict.get(frame_posittion,0),lst_scores[i])
             list_ids_dict[frame_posittion] = list_ids[i]
