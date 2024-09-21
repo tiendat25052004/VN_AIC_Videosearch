@@ -1014,6 +1014,8 @@ function index() {
                       {video.video_info_prev.lst_keyframe_paths.map(
                         (path, index) => {
                           let id = video.video_info_prev.lst_idxs[index];
+                          path = path.split("/").slice(path.split("/").length - 3).join("/");
+
                           return (
                             <ImageListVideo
                               addView={addView}
