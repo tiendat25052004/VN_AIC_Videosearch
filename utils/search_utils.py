@@ -27,6 +27,7 @@ def group_result_by_video(lst_scores, list_ids,
         result_dict[save_key]['lst_idxs'].append(int(list_id))
         result_dict[save_key]['lst_keyframe_idxs'].append(frame_id)
         result_dict[save_key]['lst_scores'].append(float(scores))
+        result_dict[save_key]['lst_scores'].sort(reverse=True)
 
         
     # for i, image_path in enumerate(list_image_paths):
