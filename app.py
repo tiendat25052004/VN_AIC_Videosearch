@@ -20,12 +20,13 @@ audio_json_path = 'dict/audio_id2img_id.json'
 scene_path = 'dict/scene_id2info.json'
 bin_clip_file = 'dict/v9/faiss_clip.bin'
 bin_clipv2_file = 'dict/v9/faiss_clipv2_cosine.bin'
+bin_blip_file = 'dict/v9/faiss_blip.bin'
 video_division_path = 'dict/video_division_tag.json'
 img2audio_json_path = 'dict/img_id2audio_id.json'
 
 VisualEncoder = VisualEncoding()
 print("ok1")
-CosineFaiss = MyFaiss(bin_clip_file, bin_clipv2_file,
+CosineFaiss = MyFaiss(bin_clip_file, bin_clipv2_file, bin_blip_file,
                       json_path, audio_json_path, img2audio_json_path)
 print("ok2")
 TagRecommendation = tag_retrieval()
@@ -160,6 +161,8 @@ def text_search():
     k = int(data['k'])
     clip = data['clip']
     clipv2 = data['clipv2']
+    blip = data['blip']
+    blip = True
     text_query = data['textquery']
     queries = text_query.split('@')
     
@@ -192,6 +195,8 @@ def text_search():
 
     if clip and clipv2:
         model_type = 'both'
+    elif blip:
+        model_type = 'blip'
     elif clip:
         model_type = 'clip'
     else:

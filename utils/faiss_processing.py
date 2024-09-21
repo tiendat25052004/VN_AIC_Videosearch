@@ -2,6 +2,7 @@ import re
 import os
 import clip
 import open_clip
+from lavis.models import load_model_and_preprocess
 import torch
 import json
 import glob
@@ -14,8 +15,9 @@ from utils.semantic_embed.speech_retrieval import speech_retrieval
 from utils.object_retrieval_engine.object_retrieval import object_retrieval
 
 class MyFaiss:
-    def __init__(self, bin_clip_file: str, bin_clipv2_file: str, json_path: str, audio_json_path:str, img2audio_json_path:str):    
+    def __init__(self, bin_clip_file: str, bin_clipv2_file: str, bin_blip_file: str, json_path: str, audio_json_path:str, img2audio_json_path:str):    
         self.index_clip = self.load_bin_file(bin_clip_file)
+        self.index_blip = self.load_bin_file(bin_blip_file)
         self.index_clipv2 = self.load_bin_file(bin_clipv2_file)
         self.object_retrieval = object_retrieval()
         self.ocr_retrieval = ocr_retrieval()
@@ -30,6 +32,7 @@ class MyFaiss:
         # self.clip_model, _ = clip.load("ViT-B/16", device=self.__device)
         # self.clip_model, _ = clip.load("ViT-L/14", device=self.__device)
         self.clip_model, _ = clip.load("ViT-L/14@336px", device=self.__device)
+        self.blip_model, self.vis_processors, self.txt_processors = load_model_and_preprocess(name="blip_feature_extractor", model_type="base", is_eval=True, device=self.__device)
         print("ok13")
         # self.clipv2_model, _, _ = open_clip.create_model_and_transforms('ViT-L-14', device=self.__device, pretrained='datacomp_xl_s13b_b90k')
         self.clipv2_model, _, _ = open_clip.create_model_and_transforms('ViT-L-16-SigLIP-384', device=self.__device, pretrained='webli')
@@ -66,16 +69,22 @@ class MyFaiss:
         if model_type == 'clip':
             text = clip.tokenize([text]).to(self.__device)  
             text_features = self.clip_model.encode_text(text)
+        elif model_type == 'blip':
+            text = txt_processors["eval"](text)
+            sample = {"text_input": [text]}
+            text_features = model.extract_features(sample, mode="text").text_embeds_proj[:,0,:]
         else:
             text = self.clipv2_tokenizer([text]).to(self.__device)  
             text_features = self.clipv2_model.encode_text(text)
-        
-        text_features /= text_features.norm(dim=-1, keepdim=True)
+        if model_type != 'blip':
+            text_features /= text_features.norm(dim=-1, keepdim=True)
         text_features = text_features.cpu().detach().numpy().astype(np.float32)
 
         ###### SEARCHING #####
         if model_type == 'clip':
             index_choosed = self.index_clip
+        elif model_type == 'blip':
+            index_choosed = self.index_blip
         else:
             index_choosed = self.index_clipv2
         
