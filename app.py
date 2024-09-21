@@ -300,8 +300,31 @@ def panel():
     lst_scores, list_ids, _, list_image_paths = CosineFaiss.context_search(object_input=object_input, ocr_input=ocr_input, asr_input=asr_input,
                                                                            k=k, semantic=semantic, keyword=keyword, index=index, useid=search_items['useid'])
 
+    score_map_dict = dict()
+    distinct_frame_posittion = set()
+    
+    
+    for i in range(k):
+        part = list_image_paths[i].split('/')[3].replace('_extra','')
+        video_id = list_image_paths[i].split('/')[4]
+        frame_id = list_image_paths[i].split('/')[5][:6]
+        
+        frame_posittion = find_split(part,video_id,frame_id)
+        
+        distinct_frame_posittion.add(frame_posittion)
+        score_map_dict[frame_posittion] = max(score_map_dict.get(frame_posittion,0),lst_scores[i])
+        list_ids_dict[frame_posittion] = list_ids[i]
+    
+    
+    for x in distinct_frame_posittion:
+        scores_map[x] = scores_map.get(x,0) + score_map_dict[x]
+            
     data = group_result_by_video(
-        lst_scores, list_ids, list_image_paths, KeyframesMapper)
+        lst_scores, list_ids, list_image_paths, 
+        KeyframesMapper,
+        scores_map,
+        list_ids_dict,
+        scene_map_dict)
     return jsonify(data)
 
 
