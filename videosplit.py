@@ -66,6 +66,6 @@ if __name__ == '__main__':
     split = VideoSplit()
     result = split.generate_tag_based()
     print(split.test(result))
-    with open("dict/video_division_tag.json") as f:
+    with open("./dict/video_division_tag.json") as f:
         f.write(json.dumps(result))
     
