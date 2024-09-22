@@ -39,8 +39,8 @@ with open(scene_path, 'r') as f:
 with open('dict/map_keyframes.json', 'r') as f:
     KeyframesMapper = json.load(f)
 
-# with open(video_division_path, 'r') as f:
-#     VideoDivision = json.load(f)
+with open(video_division_path, 'r') as f:
+    VideoDivision = json.load(f)
 
 with open('dict/video_id2img_id.json', 'r') as f:
     Videoid2imgid = json.load(f)
@@ -62,42 +62,49 @@ def find_split(part,video_id,frame):
 
 print("Run 2")
 def get_search_space(id):
-    # id starting from 1 to 4
-    search_space = []
-    # video_space = VideoDivision[f'list_{id}']
-    # for video_id in video_space:
-    #     search_space.extend(Videoid2imgid[video_id])
-    for i in range(1, 12):
-        if i < 10:
-            l = '0'+str(i)
-        else:
-            l = str(i)
-        name = f"L{l}_V"
-        map1 = [1, 2, 5, 6, 7]
-        map2 = [3, 4, 8, 11, 12]
-        map3 = [9, 10]
-        if i in map1:
-            for i in range(1, 32):
-                id = str(i)
-                while len(id) != 3:
-                    id = '0' + id
-                search_space.extend(Videoid2imgid[name+id])
-        elif id in map2:
-            for i in range(1, 31):
-                id = str(i)
-                while len(id) != 3:
-                    id = '0' + id
-                search_space.extend(Videoid2imgid[name+id])
-        else:
-            for i in range(1, 30):
-                id = str(i)
-                while len(id) != 3:
-                    id = '0' + id
-                search_space.extend(Videoid2imgid[name+id])
-    print(len(search_space))
-    with open('temp.txt', 'w') as f:
-        f.write(str(search_space))
-    return search_space
+  # id starting from 1 to 4
+  search_space = []
+  video_space = VideoDivision[f'list_{id}']
+  for video_id in video_space:
+    search_space.extend(Videoid2imgid[video_id])
+  return search_space
+# def get_search_space(id):
+#     # id starting from 1 to 4
+#     search_space = []
+#     # video_space = VideoDivision[f'list_{id}']
+#     # for video_id in video_space:
+#     #     search_space.extend(Videoid2imgid[video_id])
+#     for i in range(1, 12):
+#         if i < 10:
+#             l = '0'+str(i)
+#         else:
+#             l = str(i)
+#         name = f"L{l}_V"
+#         map1 = [1, 2, 5, 6, 7]
+#         map2 = [3, 4, 8, 11, 12]
+#         map3 = [9, 10]
+#         if i in map1:
+#             for i in range(1, 32):
+#                 id = str(i)
+#                 while len(id) != 3:
+#                     id = '0' + id
+#                 search_space.extend(Videoid2imgid[name+id])
+#         elif id in map2:
+#             for i in range(1, 31):
+#                 id = str(i)
+#                 while len(id) != 3:
+#                     id = '0' + id
+#                 search_space.extend(Videoid2imgid[name+id])
+#         else:
+#             for i in range(1, 30):
+#                 id = str(i)
+#                 while len(id) != 3:
+#                     id = '0' + id
+#                 search_space.extend(Videoid2imgid[name+id])
+#     print(len(search_space))
+#     with open('temp.txt', 'w') as f:
+#         f.write(str(search_space))
+#     return search_space
 
 
 SearchSpace = dict()

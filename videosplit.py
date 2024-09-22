@@ -4,6 +4,7 @@ from glob import glob
 from sklearn.cluster import KMeans
 from sklearn.feature_extraction.text import TfidfVectorizer
 import math
+import json
 
 class VideoSplit:
     def __init__(self, data_path='dict/context_encoded/tags_encoded/*'):
@@ -60,3 +61,11 @@ class VideoSplit:
             return 'right !!!'
         else:
             return 'wrong !!!!'
+        
+if __name__ == '__main__':
+    split = VideoSplit()
+    result = split.generate_tag_based()
+    print(split.test(result))
+    with open("dict/video_division_tag.json") as f:
+        f.write(json.dumps(result))
+    
