@@ -42,6 +42,7 @@ class VideoSplit:
         return result
     
     def generate_batch_based(self, n=2):
+        result = {}
         for i in range(n):
             result[f'list_{i+1}'] = []
         for video in self.all_vidieo_name:
