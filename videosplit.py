@@ -51,7 +51,8 @@ class VideoSplit:
             elif int(video.split('_')[0][1:])-1 / 12 < 2:
                 result["list_2"].append(video)
             else:
-                print(video)
+                print(video.split('_')[0][1:])
+        return result
     
     @staticmethod
     def generate_random(num_vidieos, n=4):
