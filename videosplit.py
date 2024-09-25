@@ -48,6 +48,8 @@ class VideoSplit:
         for video in self.all_vidieo_name:
             if (int(video.split('_')[0][1:])-1) / 12 < 1:
                 result["list_1"].append(video)
+                if int(video.split('_')[0][1:]) == 12:
+                    print("ok")
             elif (int(video.split('_')[0][1:])-1) / 12 < 2:
                 result["list_2"].append(video)
             else:

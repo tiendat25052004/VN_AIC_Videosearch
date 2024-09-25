@@ -20,7 +20,7 @@ audio_json_path = 'dict/audio_id2img_id.json'
 scene_path = 'dict/scene_id2info.json'
 bin_clip_file = 'dict/v9/faiss_clip.bin'
 bin_blip_file = 'dict/v9/faiss_blip.bin'
-video_division_path = 'dict/video_division_tag.json'
+video_division_path = 'dict/video_division_batch.json'
 img2audio_json_path = 'dict/img_id2audio_id.json'
 
 VisualEncoder = VisualEncoding()
