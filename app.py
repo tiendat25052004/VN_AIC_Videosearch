@@ -108,7 +108,7 @@ def get_search_space(id):
 
 
 SearchSpace = dict()
-for i in range(1, 5):
+for i in range(1, 3):
     SearchSpace[i] = np.array(get_search_space(i)).astype('int64')
 SearchSpace[0] = TotalIndexList
 
