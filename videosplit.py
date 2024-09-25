@@ -46,6 +46,7 @@ class VideoSplit:
         for i in range(n):
             result[f'list_{i+1}'] = []
         for video in self.all_vidieo_name:
+            print(video)
             if (int(video.split('_')[0][1:])-1) / 12 < 1:
                 result["list_1"].append(video)
                 if int(video.split('_')[0][1:]) == 12:
