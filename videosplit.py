@@ -41,6 +41,17 @@ class VideoSplit:
                 result[list_key] += np.array(cluster_list[key])[random_video_path_id[list_key]].tolist()
         return result
     
+    def generate_batch_based(self, n=2):
+        for i in range(n):
+            result[f'list_{i+1}'] = []
+        for video in self.all_vidieo_name:
+            if int(video.split('_')[0][1:])-1 / 12 < 1:
+                result["list_1"].append(video)
+            elif int(video.split('_')[0][1:])-1 / 12 < 2:
+                result["list_2"].append(video)
+            else:
+                print(video)
+    
     @staticmethod
     def generate_random(num_vidieos, n=4):
         result = {}
@@ -64,8 +75,8 @@ class VideoSplit:
         
 if __name__ == '__main__':
     split = VideoSplit()
-    result = split.generate_tag_based()
+    result = split.generate_batch_based()
     print(split.test(result))
-    with open("dict/video_division_tag.json", "w") as f:
+    with open("dict/video_division_batch.json", "w") as f:
         f.write(json.dumps(result))
     
