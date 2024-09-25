@@ -10,7 +10,7 @@ class VideoSplit:
     def __init__(self, data_path='dict/context_encoded/tags_encoded/*'):
         list_vidieo_folder = glob(data_path)
         list_vidieo_folder.sort()
-        list_vidieo_folder = np.array(list_vidieo_folder)[::2].tolist()
+        list_vidieo_folder = np.array(list_vidieo_folder).tolist()
         self.list_vidieo_path = []
         for folder in list_vidieo_folder:
             print(folder)
