@@ -13,8 +13,11 @@ class VideoSplit:
         list_vidieo_folder = np.array(list_vidieo_folder)[::2].tolist()
         self.list_vidieo_path = []
         for folder in list_vidieo_folder:
+            print(folder)
             self.list_vidieo_path += glob(folder+'/*.txt')
+        print(self.list_vidieo_path)
         self.all_vidieo_name = list(map(lambda x: '_'.join([x[34:37], x[-8:-4]]), self.list_vidieo_path))
+        print(self.all_vidieo_name)
     
     def generate_random_video(self, n=4):
         result = self.generate_random(len(self.all_vidieo_name), n=n)
@@ -46,7 +49,7 @@ class VideoSplit:
         for i in range(n):
             result[f'list_{i+1}'] = []
         for video in self.all_vidieo_name:
-            print(video)
+            # print(video)
             if (int(video.split('_')[0][1:])-1) / 12 < 1:
                 result["list_1"].append(video)
                 if int(video.split('_')[0][1:]) == 12:
