@@ -10,11 +10,14 @@ class VideoSplit:
     def __init__(self, data_path='dict/context_encoded/tags_encoded/*'):
         list_vidieo_folder = glob(data_path)
         list_vidieo_folder.sort()
-        list_vidieo_folder = np.array(list_vidieo_folder)[::2].tolist()
+        list_vidieo_folder = np.array(list_vidieo_folder).tolist()
         self.list_vidieo_path = []
         for folder in list_vidieo_folder:
+            # print(folder)
             self.list_vidieo_path += glob(folder+'/*.txt')
+        # print(self.list_vidieo_path)
         self.all_vidieo_name = list(map(lambda x: '_'.join([x[34:37], x[-8:-4]]), self.list_vidieo_path))
+        # print(self.all_vidieo_name)
     
     def generate_random_video(self, n=4):
         result = self.generate_random(len(self.all_vidieo_name), n=n)
@@ -39,6 +42,22 @@ class VideoSplit:
             random_video_path_id = self.generate_random(len(cluster_list[key]), n=n)
             for list_key in random_video_path_id.keys():
                 result[list_key] += np.array(cluster_list[key])[random_video_path_id[list_key]].tolist()
+        return result
+    
+    def generate_batch_based(self, n=2):
+        result = {}
+        for i in range(n):
+            result[f'list_{i+1}'] = []
+        for video in self.all_vidieo_name:
+            # print(video)
+            if (int(video.split('_')[0][1:])-1) / 12 < 1:
+                result["list_1"].append(video)
+                if int(video.split('_')[0][1:]) == 12:
+                    print("ok")
+            elif (int(video.split('_')[0][1:])-1) / 12 < 2:
+                result["list_2"].append(video)
+            else:
+                print(int(video.split('_')[0][1:])-1)
         return result
     
     @staticmethod

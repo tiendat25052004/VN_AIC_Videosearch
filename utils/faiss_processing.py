@@ -30,8 +30,13 @@ class MyFaiss:
         print(self.__device)
         # self.clip_model, _ = clip.load("ViT-B/16", device=self.__device)
         # self.clip_model, _ = clip.load("ViT-L/14", device=self.__device)
+<<<<<<< HEAD
         self.clip_model, _ = clip.load("ViT-L/14@336px", device=self.__device)
         self.blip_model, self.vis_processors, self.txt_processors = load_model_and_preprocess(name="blip2_feature_extractor", model_type="pretrain", is_eval=True, device=device)
+=======
+        self.clip_model, _ = clip.load("ViT-L/14", device=self.__device)
+        self.blip_model, self.vis_processors, self.txt_processors = load_model_and_preprocess(name="blip_feature_extractor", model_type="base", is_eval=True, device=self.__device)
+>>>>>>> refs/remotes/origin/master
         print("ok13")
         # self.clipv2_model, _, _ = open_clip.create_model_and_transforms('ViT-L-14', device=self.__device, pretrained='datacomp_xl_s13b_b90k')
         # self.clipv2_model, _, _ = open_clip.create_model_and_transforms('ViT-L-16-SigLIP-384', device=self.__device, pretrained='webli')
