@@ -18,7 +18,7 @@ print("Starting server")
 json_path = 'dict/id2img_fps.json'
 audio_json_path = 'dict/audio_id2img_id.json'
 scene_path = 'dict/scene_id2info.json'
-bin_clip_file = 'dict/v10/faiss_clip.bin'
+bin_clip_file = ['dict/v12/faiss_clip_batch_1.bin', 'dict/v12/faiss_clip_batch_2.bin']
 bin_blip_file = 'dict/v10/faiss_blip2.bin'
 video_division_path = 'dict/video_division_batch.json'
 img2audio_json_path = 'dict/img_id2audio_id.json'
@@ -164,6 +164,7 @@ def text_search():
     data = request.json
 
     search_space_index = int(data['search_space'])
+    batch = search_space_index
     k = int(data['k'])
     clip = data['clip']
     blip = data['blip']
@@ -192,9 +193,9 @@ def text_search():
             index = keep_index
 
     if index is None:
-        index = SearchSpace[search_space_index]
+        index = SearchSpace[0]
     else:
-        index = np.intersect1d(index, SearchSpace[search_space_index])
+        index = np.intersect1d(index, SearchSpace[0])
     k = min(k, len(index))
 
     if clip and blip:
@@ -219,15 +220,15 @@ def text_search():
     else:
         if model_type == 'both':
             scores_clip, list_clip_ids, _, _ = CosineFaiss.text_search(
-                query, index=index, k=k, model_type='clip')
+                query, index=index, k=k, model_type='clip', batch=batch)
             scores_blip, list_blip_ids, _, _ = CosineFaiss.text_search(
-                query, index=index, k=k, model_type='blip')
+                query, index=index, k=k, model_type='blip', batch=batch)
             lst_scores, list_ids = merge_searching_results_by_addition([scores_clip, scores_blip],
                                                                     [list_clip_ids, list_blip_ids])
             infos_query = list(map(CosineFaiss.id2img_fps.get, list(list_ids)))
             list_image_paths = [info['image_path'] for info in infos_query]
         else:
-            lst_scores, list_ids, _, list_image_paths = CosineFaiss.text_search(query, index=index, k=k, model_type=model_type)
+            lst_scores, list_ids, _, list_image_paths = CosineFaiss.text_search(query, index=index, k=k, model_type=model_type, batch=batch)
                 
         #tạo score map cho từng query
     #     score_map_dict = dict()

@@ -15,8 +15,8 @@ from utils.semantic_embed.speech_retrieval import speech_retrieval
 from utils.object_retrieval_engine.object_retrieval import object_retrieval
 
 class MyFaiss:
-    def __init__(self, bin_clip_file: str, bin_blip_file: str, json_path: str, audio_json_path:str, img2audio_json_path:str):    
-        self.index_clip = self.load_bin_file(bin_clip_file)
+    def __init__(self, bin_clip_file: list[str], bin_blip_file: str, json_path: str, audio_json_path:str, img2audio_json_path:str):    
+        self.index_clip = [self.load_bin_file(bin_clip_file[0]), self.load_bin_file(bin_clip_file[1])]
         self.index_blip = self.load_bin_file(bin_blip_file)
         self.object_retrieval = object_retrieval()
         self.ocr_retrieval = ocr_retrieval()
@@ -61,7 +61,7 @@ class MyFaiss:
         image_paths = [info['image_path'] for info in infos_query]
         return scores.flatten(), idx_image, infos_query, image_paths
 
-    def text_search(self, text, index, k, model_type):
+    def text_search(self, text, index, k, model_type, batch):
         text = self.translater(text)
         
         ###### TEXT FEATURES EXTRACTING ######
@@ -76,11 +76,12 @@ class MyFaiss:
         text_features = text_features.cpu().detach().numpy().astype(np.float32)
 
         ###### SEARCHING #####
+        if model_type == 'clip' and batch == 2:
+            index_choosed = self.index_clip[1]
         if model_type == 'clip':
-            index_choosed = self.index_clip
+            index_choosed = self.index_clip[0]
         elif model_type == 'blip':
             index_choosed = self.index_blip
-        
         if index is None:
           scores, idx_image = index_choosed.search(text_features, k=k)
         else:
