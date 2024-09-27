@@ -219,15 +219,15 @@ def text_search():
     else:
         if model_type == 'both':
             scores_clip, list_clip_ids, _, _ = CosineFaiss.text_search(
-                query, index=None, k=k, model_type='clip')
+                query, index=index, k=k, model_type='clip')
             scores_blip, list_blip_ids, _, _ = CosineFaiss.text_search(
-                query, index=None, k=k, model_type='blip')
+                query, index=index, k=k, model_type='blip')
             lst_scores, list_ids = merge_searching_results_by_addition([scores_clip, scores_blip],
                                                                     [list_clip_ids, list_blip_ids])
             infos_query = list(map(CosineFaiss.id2img_fps.get, list(list_ids)))
             list_image_paths = [info['image_path'] for info in infos_query]
         else:
-            lst_scores, list_ids, _, list_image_paths = CosineFaiss.text_search(query, index=None, k=k, model_type=model_type)
+            lst_scores, list_ids, _, list_image_paths = CosineFaiss.text_search(query, index=index, k=k, model_type=model_type)
                 
         #tạo score map cho từng query
     #     score_map_dict = dict()

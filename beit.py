@@ -247,7 +247,6 @@ for folder in tqdm(image_dir):
                 batch_images = [image_path for image_path in batch_paths]
 
                 embeddings = calc_img_embedding(models, batch_images, device)
-                print(embeddings)
                 for b in range(embeddings.shape[0]):
                     video_feats.append(embeddings[b].cpu().numpy().astype(np.float32).flatten())
 
