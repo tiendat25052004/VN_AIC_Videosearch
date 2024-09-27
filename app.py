@@ -18,7 +18,7 @@ print("Starting server")
 json_path = 'dict/id2img_fps.json'
 audio_json_path = 'dict/audio_id2img_id.json'
 scene_path = 'dict/scene_id2info.json'
-bin_clip_file = ['dict/v13/faiss_clip_batch_1.bin', 'dict/v13/faiss_clip_batch_2.bin']
+bin_clip_file = ['dict/v16/faiss_clip.bin', 'dict/v13/faiss_clip_batch_2.bin']
 bin_blip_file = 'dict/v10/faiss_blip2.bin'
 video_division_path = 'dict/video_division_batch.json'
 img2audio_json_path = 'dict/img_id2audio_id.json'
