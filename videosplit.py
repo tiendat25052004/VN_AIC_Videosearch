@@ -83,8 +83,8 @@ class VideoSplit:
         
 if __name__ == '__main__':
     split = VideoSplit()
-    result = split.generate_tag_based()
+    result = split.generate_batch_based()
     print(split.test(result))
-    with open("dict/video_division_tag.json", "w") as f:
+    with open("dict/video_division_batch.json", "w") as f:
         f.write(json.dumps(result))
     
