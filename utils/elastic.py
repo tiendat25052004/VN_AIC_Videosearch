@@ -12,6 +12,7 @@ headers = {
 }
 
 def extract_ans(ans: dict):
+    print(ans)
     hits = ans['hits']['hits']
     results = list(map(lambda x: x['_source'], hits))
     lst_scores = [hit["_score"] for hit in hits]
