@@ -219,17 +219,18 @@ def text_search():
                                                                            k=k, semantic=semantic, keyword=keyword, index=index, useid=None)
     lst_scores, list_ids = merge_searching_results_by_addition([lst_scores_sematic, lst_scores],
                                                                 [list_ids_sematic, list_ids])
-    
-    if data['ocr'] == "":
-        ocr_result = None
-    else:
-        ocr_result = extract_ans(advance_query(data['ocr'], fuzzyness='2', inorder=False, slop=2))
     data = group_result_by_video_old(
         lst_scores, list_ids, list_image_paths, KeyframesMapper)
-    if data['asr'] == "":
-        asr_result = None
+    
+    if ocr_input is not None:
+        ocr_result = extract_ans(advance_query(ocr_input, fuzzyness='2', inorder=False, slop=2))
     else:
-        asr_result = extract_ans(advance_query(data['asr'], fuzzyness='2', inorder=False, slop=2))
+        ocr_result = None
+    
+    if asr_input is not None:
+        asr_result = extract_ans(advance_query(asr_input, fuzzyness='2', inorder=False, slop=2))
+    else:
+        asr_result = None
         #tạo score map cho từng query
     #     score_map_dict = dict()
     #     distinct_frame_posittion = set()
@@ -259,7 +260,7 @@ def text_search():
     
     data = group_result_by_video_old(
         lst_scores, list_ids, list_image_paths, KeyframesMapper)
-    data = filter_results(data, asr_results=asr_result)
+    data = filter_results(data, asr_results=asr_result, ocr_results=ocr_result)
     return jsonify(data)
 
 
