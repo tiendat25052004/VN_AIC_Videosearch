@@ -63,6 +63,7 @@ def group_result_by_video(lst_scores, list_ids,
 
 def group_result_by_video_old(lst_scores, list_ids, list_image_paths, KeyframesMapper):
     result_dict = dict()
+    lst_scores = (lst_scores-np.min(lst_scores))/(np.max(lst_scores)-np.min(lst_scores)+0.000001)
     for i, image_path in enumerate(list_image_paths):
         data_part, video_id, frame_id = image_path.replace(
             '/data/KeyFrames/', '').replace('.webp', '').split('/')[-3:]
@@ -93,6 +94,21 @@ def group_result_by_video_old(lst_scores, list_ids, list_image_paths, KeyframesM
         result, key=lambda x: x['video_info']['lst_scores'][0], reverse=True)
 
     return result
+
+def filter_results(results, asr_results=None, ocr_results=None):
+    result_list = []
+    if asr_results is not None:
+        videos = [ f"{asr['L']}_{asr['V']}" for asr in asr_results]
+        scores = [asr["score"] for asr in asr_results]
+        for result in results:
+            if result['video_id'] in videos:
+                score = scores[videos.index(result['video_id'])]
+                for i in range(len(result["video_info"]["lst_scores"])):
+                    result["video_info"]["lst_scores"][i] = result["video_info"]["lst_scores"][i] + score
+    for result in results:
+        for path, idx, keyframe_idx, score in zip(result['lst_keyframe_paths'], result['lst_idxs'], result['lst_keyframe_idxs'], result['lst_scores']):
+            result_list.append({"id": idx, "keyframe_path": path, "keyframe_id": keyframe_idx, "score": score})
+    return sorted(result_list, key=lambda x: x["score"], reverse=True)
 
 def search_by_filter(prev_result, text_query, k, mode, model_type, range_filter, ignore_index, keep_index, Sceneid2info, DictImagePath, CosineFaiss, KeyframesMapper):
     ignore_videos = None

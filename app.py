@@ -10,7 +10,8 @@ from utils.faiss_processing import MyFaiss
 from utils.context_encoding import VisualEncoding
 from utils.semantic_embed.tag_retrieval import tag_retrieval
 from utils.combine_utils import merge_searching_results_by_addition
-from utils.search_utils import group_result_by_video, search_by_filter, group_result_by_video_old
+from utils.search_utils import group_result_by_video, search_by_filter, group_result_by_video_old, filter_results
+from utils.elastic import advance_query, extract_ans
 from gevent.pywsgi import WSGIServer
 import glob
 print("Starting server")
@@ -19,9 +20,11 @@ json_path = 'dict/id2img_fps.json'
 audio_json_path = 'dict/audio_id2img_id.json'
 scene_path = 'dict/scene_id2info.json'
 bin_clip_file = 'dict/v17/faiss_clip.bin'
+# bin_beit_file = 'dict/v17/faiss_beit.bin'
 bin_blip_file = 'dict/v17/faiss_blip2.bin'
 video_division_path = 'dict/video_division_batch.json'
 img2audio_json_path = 'dict/img_id2audio_id.json'
+video2img = 'dict/video_id2img_id.json'
 
 VisualEncoder = VisualEncoding()
 print("ok1")
@@ -169,30 +172,9 @@ def text_search():
     blip = data['blip']
     blip = True
     query = data['textquery']
-    
-    range_filter = int(data['range_filter'])
-    index = None
-    if data['filter']:
-        index = np.array(data['id']).astype('int64')
-        k = min(k, len(index))
-        print("using index")
-
-    keep_index = None
-    ignore_index = None
-    if data['ignore']:
-        ignore_index = get_related_ignore(
-            np.array(data['ignore_idxs']).astype('int64'))
-        keep_index = np.delete(TotalIndexList, ignore_index)
-        print("using ignore")
-
-    if keep_index is not None:
-        if index is not None:
-            index = np.intersect1d(index, keep_index)
-        else:
-            index = keep_index
 
     if index is None:
-        index = SearchSpace[0]
+        index = SearchSpace[search_space_index]
     else:
         index = np.intersect1d(index, SearchSpace[0])
     k = min(k, len(index))
@@ -210,25 +192,46 @@ def text_search():
         # print(query)
         # with open('temp.txt','a') as file:
         #     file.write(str(query))
-    if data['filtervideo'] != 0:
-        print('filter video')
-        mode = data['filtervideo']
-        prev_result = data['videos']
-        data = search_by_filter(prev_result, query, k, mode, model_type, range_filter,
-                                ignore_index, keep_index, Sceneid2info, DictImagePath, CosineFaiss, KeyframesMapper)
+    if model_type == 'both':
+        scores_clip, list_clip_ids, _, _ = CosineFaiss.text_search(
+            query, index=index, k=k, model_type='clip')
+        scores_blip, list_blip_ids, _, _ = CosineFaiss.text_search(
+            query, index=index, k=k, model_type='blip')
+        lst_scores, list_ids = merge_searching_results_by_addition([scores_clip, scores_blip],
+                                                                [list_clip_ids, list_blip_ids])
+        infos_query = list(map(CosineFaiss.id2img_fps.get, list(list_ids)))
+        list_image_paths = [info['image_path'] for info in infos_query]
     else:
-        if model_type == 'both':
-            scores_clip, list_clip_ids, _, _ = CosineFaiss.text_search(
-                query, index=index, k=k, model_type='clip')
-            scores_blip, list_blip_ids, _, _ = CosineFaiss.text_search(
-                query, index=index, k=k, model_type='blip')
-            lst_scores, list_ids = merge_searching_results_by_addition([scores_clip, scores_blip],
-                                                                    [list_clip_ids, list_blip_ids])
-            infos_query = list(map(CosineFaiss.id2img_fps.get, list(list_ids)))
-            list_image_paths = [info['image_path'] for info in infos_query]
-        else:
-            lst_scores, list_ids, _, list_image_paths = CosineFaiss.text_search(query, index=index, k=k, model_type=model_type)
-                
+        lst_scores, list_ids, _, list_image_paths = CosineFaiss.text_search(query, index=index, k=k, model_type=model_type)
+        
+        
+    if search_items['ocr'] == "":
+        ocr_input = None
+    else:
+        ocr_input = search_items['ocr']
+        
+    if search_items['asr'] == "":
+        asr_input = None
+    else:
+        asr_input = search_items['asr']
+
+    semantic = True
+    keyword = True
+    lst_scores_sematic, list_ids_sematic, _, list_image_paths = CosineFaiss.context_search(object_input=None, ocr_input=ocr_input, asr_input=asr_input,
+                                                                           k=k, semantic=semantic, keyword=keyword, index=index, useid=None)
+    lst_scores, list_ids = merge_searching_results_by_addition([lst_scores_sematic, lst_scores],
+                                                                [list_ids_sematic, list_ids])
+    
+    if search_items['ocr'] == "":
+        ocr_result = None
+    else:
+        ocr_result = extract_ans(advance_query(search_items['ocr'], fuzzyness='2', inorder=False, slop=2))
+    data = group_result_by_video_old(
+        lst_scores, list_ids, list_image_paths, KeyframesMapper)
+    if search_items['asr'] == "":
+        asr_result = None
+    else:
+        asr_result = extract_ans(advance_query(search_items['asr'], fuzzyness='2', inorder=False, slop=2))
         #tạo score map cho từng query
     #     score_map_dict = dict()
     #     distinct_frame_posittion = set()
@@ -258,6 +261,7 @@ def text_search():
     
     data = group_result_by_video_old(
         lst_scores, list_ids, list_image_paths, KeyframesMapper)
+    data = filter_results(data, asr_results=asr_result)
     return jsonify(data)
 
 

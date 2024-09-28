@@ -13,11 +13,16 @@ from utils.combine_utils import merge_searching_results_by_addition
 from utils.ocr_retrieval_engine.ocr_retrieval import ocr_retrieval
 from utils.semantic_embed.speech_retrieval import speech_retrieval
 from utils.object_retrieval_engine.object_retrieval import object_retrieval
-
+from utils.beit_utils import calc_text_embedding, get_sentencepiece_model_for_beit3
+ckpt_path = "beit3_base_patch16_384_f30k_retrieval.pth"
+tokenizer_path = "beit3.spm"
+model_name = "beit3_base_patch16_384_retrieval"
+num_classes = 10
 class MyFaiss:
     def __init__(self, bin_clip_file: str, bin_blip_file: str, json_path: str, audio_json_path:str, img2audio_json_path:str):    
         self.index_clip = self.load_bin_file(bin_clip_file)
         self.index_blip = self.load_bin_file(bin_blip_file)
+        # self.index_beit = self.load_bin_file(bin_beit_file)
         self.object_retrieval = object_retrieval()
         self.ocr_retrieval = ocr_retrieval()
         self.asr_retrieval = speech_retrieval()
@@ -33,6 +38,10 @@ class MyFaiss:
         # self.clip_model, _ = clip.load("ViT-L/14@336px", device=self.__device)
         self.blip_model, self.vis_processors, self.txt_processors = load_model_and_preprocess(name="blip2_feature_extractor", model_type="pretrain", is_eval=True, device=self.__device)
         print("ok13")
+        # self.beit_model = timm.models.create_model(model_name, pretrained=False, num_classes=num_classes)
+        # checkpoint = torch.load(ckpt_path, map_location=self.__device)
+        # self.beit_model.load_state_dict(checkpoint['model'])
+        # self.beit_tokenizer = get_sentencepiece_model_for_beit3(tokenizer_path)
         # self.clipv2_model, _, _ = open_clip.create_model_and_transforms('ViT-L-14', device=self.__device, pretrained='datacomp_xl_s13b_b90k')
         # self.clipv2_model, _, _ = open_clip.create_model_and_transforms('ViT-L-16-SigLIP-384', device=self.__device, pretrained='webli')
         # self.clipv2_model, _, _ = open_clip.create_model_and_transforms('ViT-H-14-378-quickgelu', device=self.__device, pretrained='dfn5b')
@@ -72,6 +81,8 @@ class MyFaiss:
             text = self.txt_processors["eval"](text)
             sample = {"text_input": [text]}
             text_features = self.blip_model.extract_features(sample, mode="text").text_embeds_proj[:,0,:]
+        else:
+            text_features = calc_text_embedding(self.beit_model, text, self.beit_tokenizer)
         text_features /= text_features.norm(dim=-1, keepdim=True)
         text_features = text_features.cpu().detach().numpy().astype(np.float32)
 
