@@ -109,7 +109,7 @@ def filter_results(results, asr_results=None, ocr_results=None):
                     result["video_info"]["lst_scores"][i] = result["video_info"]["lst_scores"][i] + score
     print(results)
     for result in results:
-        for path, idx, keyframe_idx, score in zip(result['lst_keyframe_paths'], result['lst_idxs'], result['lst_keyframe_idxs'], result['lst_scores']):
+        for path, idx, keyframe_idx, score in zip(result["video_info"]['lst_keyframe_paths'], result["video_info"]['lst_idxs'], result["video_info"]['lst_keyframe_idxs'], result["video_info"]['lst_scores']):
             result_list.append({"id": idx, "keyframe_path": path, "keyframe_id": keyframe_idx, "score": score})
     return sorted(result_list, key=lambda x: x["score"], reverse=True)
 
