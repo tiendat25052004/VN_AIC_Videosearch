@@ -170,15 +170,13 @@ def text_search():
     k = int(data['k'])
     clip = data['clip']
     blip = data['blip']
-    blip = True
     query = data['textquery']
-
+    index = None
     if index is None:
         index = SearchSpace[search_space_index]
     else:
         index = np.intersect1d(index, SearchSpace[0])
     k = min(k, len(index))
-
     if clip and blip:
         model_type = 'both'
     elif blip:
