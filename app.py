@@ -223,12 +223,12 @@ def text_search():
         lst_scores, list_ids, list_image_paths, KeyframesMapper)
     
     if ocr_input is not None:
-        ocr_result = extract_ans(advance_query(ocr_input, fuzzyness='2', inorder=False, slop=2, index="ocr"))
+        ocr_result = advance_query(ocr_input, fuzzyness='2', inorder=False, slop=2, index="ocr")
     else:
         ocr_result = None
     
     if asr_input is not None:
-        asr_result = extract_ans(advance_query(asr_input, fuzzyness='2', inorder=False, slop=2, index="audio"))
+        asr_result = advance_query(asr_input, fuzzyness='2', inorder=False, slop=2, index="audio")
     else:
         asr_result = None
         #tạo score map cho từng query
