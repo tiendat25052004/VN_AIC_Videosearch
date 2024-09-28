@@ -100,14 +100,11 @@ def filter_results(results, asr_results=None, ocr_results=None):
     if asr_results is not None:
         videos = [ f"{asr['L']}_{asr['V']}" for asr in asr_results]
         scores = [asr["score"] for asr in asr_results]
-        print(videos)
-        print(scores)
         for result in results:
             if result['video_id'] in videos:
                 score = scores[videos.index(result['video_id'])]
                 for i in range(len(result["video_info"]["lst_scores"])):
                     result["video_info"]["lst_scores"][i] = result["video_info"]["lst_scores"][i] + score
-    print(results)
     for result in results:
         for path, idx, keyframe_idx, score in zip(result["video_info"]['lst_keyframe_paths'], result["video_info"]['lst_idxs'], result["video_info"]['lst_keyframe_idxs'], result["video_info"]['lst_scores']):
             result_list.append({"id": idx, "keyframe_path": path, "keyframe_id": keyframe_idx, "score": score})

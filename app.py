@@ -215,10 +215,11 @@ def text_search():
 
     semantic = True
     keyword = True
-    lst_scores_sematic, list_ids_sematic, _, list_image_paths = CosineFaiss.context_search(object_input=None, ocr_input=ocr_input, asr_input=asr_input,
-                                                                           k=k, semantic=semantic, keyword=keyword, index=index, useid=None)
-    lst_scores, list_ids = merge_searching_results_by_addition([lst_scores_sematic, lst_scores],
-                                                                [list_ids_sematic, list_ids])
+    if ocr_input is not None or asr_input is not None:
+        lst_scores_sematic, list_ids_sematic, _, list_image_paths = CosineFaiss.context_search(object_input=None, ocr_input=ocr_input, asr_input=asr_input,
+                                                                            k=k, semantic=semantic, keyword=keyword, index=index, useid=None)
+        lst_scores, list_ids = merge_searching_results_by_addition([lst_scores_sematic, lst_scores],
+                                                                    [list_ids_sematic, list_ids])
     data = group_result_by_video_old(
         lst_scores, list_ids, list_image_paths, KeyframesMapper)
     
