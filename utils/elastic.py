@@ -2,7 +2,7 @@
 import requests
 from requests.auth import HTTPBasicAuth
 import json
-
+import numpy as np
 URL_SEARCH = {
     "audio": "http://elastic:changeme@20.2.84.151:9200/audio/_search",
     "ocr": "http://elastic:changeme@20.2.84.151:9200/ocr/_search"
