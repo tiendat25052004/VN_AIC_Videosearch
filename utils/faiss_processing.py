@@ -13,7 +13,7 @@ from utils.combine_utils import merge_searching_results_by_addition
 from utils.ocr_retrieval_engine.ocr_retrieval import ocr_retrieval
 from utils.semantic_embed.speech_retrieval import speech_retrieval
 from utils.object_retrieval_engine.object_retrieval import object_retrieval
-from utils.beit_utils import calc_text_embedding, get_sentencepiece_model_for_beit3
+# from utils.beit_utils import calc_text_embedding, get_sentencepiece_model_for_beit3
 ckpt_path = "beit3_base_patch16_384_f30k_retrieval.pth"
 tokenizer_path = "beit3.spm"
 model_name = "beit3_base_patch16_384_retrieval"
