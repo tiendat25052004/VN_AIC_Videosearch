@@ -29,7 +29,7 @@ class speech_retrieval(semantic_extract, load_file):
             input_datatype = 'json',
             output_datatype = 'bin',
             test_mode = False, # Enable to load raw data for debugging mode
-            enable_semantic = False,
+            enable_semantic = True,
     ):
         if not os.path.exists(os.path.join(PROJECT_ROOT, 'dict/bin')):
             os.mkdir(os.path.join(PROJECT_ROOT, 'dict/bin'))

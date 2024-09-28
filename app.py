@@ -203,15 +203,15 @@ def text_search():
         lst_scores, list_ids, _, list_image_paths = CosineFaiss.text_search(query, index=index, k=k, model_type=model_type)
         
         
-    if search_items['ocr'] == "":
+    if data['ocr'] == "":
         ocr_input = None
     else:
-        ocr_input = search_items['ocr']
+        ocr_input = data['ocr']
         
-    if search_items['asr'] == "":
+    if data['asr'] == "":
         asr_input = None
     else:
-        asr_input = search_items['asr']
+        asr_input = data['asr']
 
     semantic = True
     keyword = True
@@ -220,16 +220,16 @@ def text_search():
     lst_scores, list_ids = merge_searching_results_by_addition([lst_scores_sematic, lst_scores],
                                                                 [list_ids_sematic, list_ids])
     
-    if search_items['ocr'] == "":
+    if data['ocr'] == "":
         ocr_result = None
     else:
-        ocr_result = extract_ans(advance_query(search_items['ocr'], fuzzyness='2', inorder=False, slop=2))
+        ocr_result = extract_ans(advance_query(data['ocr'], fuzzyness='2', inorder=False, slop=2))
     data = group_result_by_video_old(
         lst_scores, list_ids, list_image_paths, KeyframesMapper)
-    if search_items['asr'] == "":
+    if data['asr'] == "":
         asr_result = None
     else:
-        asr_result = extract_ans(advance_query(search_items['asr'], fuzzyness='2', inorder=False, slop=2))
+        asr_result = extract_ans(advance_query(data['asr'], fuzzyness='2', inorder=False, slop=2))
         #tạo score map cho từng query
     #     score_map_dict = dict()
     #     distinct_frame_posittion = set()
