@@ -104,7 +104,17 @@ def filter_results(results, asr_results=None, ocr_results=None):
             if result['video_id'] in videos:
                 score = scores[videos.index(result['video_id'])]
                 for i in range(len(result["video_info"]["lst_scores"])):
-                    result["video_info"]["lst_scores"][i] = result["video_info"]["lst_scores"][i] + score
+                    result["video_info"]["lst_scores"][i] = result["video_info"]["lst_scores"][i] + score/2
+    if ocr_results is not None:
+        ocr_id = [ocr["id"] for ocr in ocr_results]
+        scores = [ocr["score"] for ocr in ocr_results]
+        for result in results:
+            frame_id = set(result["video_info"]["lst_idxs"])
+            same_id = list(frame_id.intersection(set(ocr_id)))
+            for idx in same_id:
+                score = scores[ocr_id.index(idx)]
+                pos = result["video_info"]["lst_idxs"].index(idx)
+                result["video_info"]["lst_scores"][pos] = result["video_info"]["lst_scores"][pos] + score/2
     for result in results:
         for path, idx, keyframe_idx, score in zip(result["video_info"]['lst_keyframe_paths'], result["video_info"]['lst_idxs'], result["video_info"]['lst_keyframe_idxs'], result["video_info"]['lst_scores']):
             result_list.append({"id": idx, "keyframe_path": path, "keyframe_id": keyframe_idx, "score": score})
