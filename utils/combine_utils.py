@@ -39,7 +39,10 @@ def merge_searching_results_by_addition(list_scores, list_indices):
     # Normalize score
     new_list_scores = []
     for scores in list_scores:
-      new_scores = (scores-np.min(scores))/(np.max(scores)-np.min(scores)+0.000001)
+      if len(scores) > 0:
+        new_scores = (scores-np.min(scores))/(np.max(scores)-np.min(scores)+0.000001)
+      else:
+        new_scores = scores
       new_list_scores.append(new_scores)
 
     result_dict = dict()
