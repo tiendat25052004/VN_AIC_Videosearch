@@ -104,7 +104,7 @@ def filter_results(results, asr_results=None, ocr_results=None, object_input=[])
             if result['video_id'] in videos:
                 score = scores[videos.index(result['video_id'])]
                 for i in range(len(result["video_info"]["lst_scores"])):
-                    result["video_info"]["lst_scores"][i] = result["video_info"]["lst_scores"][i] + score/2
+                    result["video_info"]["lst_scores"][i] = result["video_info"]["lst_scores"][i] + score
     if ocr_results is not None:
         ocr_id = [ocr["id"] for ocr in ocr_results]
         scores = [ocr["score"] for ocr in ocr_results]
@@ -114,7 +114,7 @@ def filter_results(results, asr_results=None, ocr_results=None, object_input=[])
             for idx in same_id:
                 score = scores[ocr_id.index(idx)]
                 pos = result["video_info"]["lst_idxs"].index(idx)
-                result["video_info"]["lst_scores"][pos] = result["video_info"]["lst_scores"][pos] + score/2
+                result["video_info"]["lst_scores"][pos] = result["video_info"]["lst_scores"][pos] + score
     if len(object_input) > 0:
         object_filter = handle_object_filter(object_input)
         for result in results:
@@ -126,7 +126,7 @@ def filter_results(results, asr_results=None, ocr_results=None, object_input=[])
         for result in results:
             for path, idx, keyframe_idx, score in zip(result["video_info"]['lst_keyframe_paths'], result["video_info"]['lst_idxs'], result["video_info"]['lst_keyframe_idxs'], result["video_info"]['lst_scores']):
                 result_list.append({"id": idx, "keyframe_path": path, "keyframe_id": keyframe_idx, "score": score})
-            
+    print(sorted(result_list, key=lambda x: x["score"], reverse=True))    
     return sorted(result_list, key=lambda x: x["score"], reverse=True)
 
 def search_by_filter(prev_result, text_query, k, mode, model_type, range_filter, ignore_index, keep_index, Sceneid2info, DictImagePath, CosineFaiss, KeyframesMapper):
