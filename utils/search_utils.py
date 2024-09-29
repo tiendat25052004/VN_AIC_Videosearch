@@ -95,7 +95,7 @@ def group_result_by_video_old(lst_scores, list_ids, list_image_paths, KeyframesM
 
     return result
 
-def filter_results(results, asr_results=None, ocr_results=None, object_input=None):
+def filter_results(results, asr_results=None, ocr_results=None, object_input=[]):
     result_list = []
     if asr_results is not None:
         videos = [ f"{asr['L']}_{asr['V']}" for asr in asr_results]
@@ -115,7 +115,7 @@ def filter_results(results, asr_results=None, ocr_results=None, object_input=Non
                 score = scores[ocr_id.index(idx)]
                 pos = result["video_info"]["lst_idxs"].index(idx)
                 result["video_info"]["lst_scores"][pos] = result["video_info"]["lst_scores"][pos] + score/2
-    if object_input is not None:
+    if len(object_input) > 0:
         object_filter = handle_object_filter(object_input)
         for result in results:
             for path, idx, keyframe_idx, score in zip(result["video_info"]['lst_keyframe_paths'], result["video_info"]['lst_idxs'], result["video_info"]['lst_keyframe_idxs'], result["video_info"]['lst_scores']):

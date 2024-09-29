@@ -76,7 +76,7 @@ def handle_object_filter(object_input):
             rights = []            
             bottoms = []
             for object_item in object_input:
-                class_names.append(object_item["classname"])
+                class_names.append(object_item["name"])
                 tops.append(object_item["topleft"][0])
                 lefts.append(object_item["topleft"][1])
                 bottoms.append(object_item["botright"][0])

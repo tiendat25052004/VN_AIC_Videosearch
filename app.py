@@ -212,6 +212,7 @@ def text_search():
         asr_input = None
     else:
         asr_input = data['asr']
+    object_input = data['object']
 
     semantic = True
     keyword = True
@@ -261,7 +262,7 @@ def text_search():
     
     data = group_result_by_video_old(
         lst_scores, list_ids, list_image_paths, KeyframesMapper)
-    data = filter_results(data, asr_results=asr_result, ocr_results=ocr_result)
+    data = filter_results(data, asr_results=asr_result, ocr_results=ocr_result, object_input=object_input)
     return jsonify(data)
 
 
