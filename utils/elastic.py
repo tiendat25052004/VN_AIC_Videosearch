@@ -68,6 +68,7 @@ def fuzzy_normal_search(s: str, fuzzy: str = 'AUTO', index: str = 'ocr'):
 
 
 def advance_query(s, slop: int=3, inorder = True, fuzzyness: str = 'AUTO', index: str = 'ocr'):
+    print(f"Searching for: {s}")
     """
         Tìm kiếm nâng cao, tách từng từ ra sau đó search và ghép lại, slop là khoảng cách tối đa để ghép, càng để rộng thì
         càng tìm được nhiều nhưng có thể bị tối nghĩa
@@ -109,6 +110,7 @@ def advance_query(s, slop: int=3, inorder = True, fuzzyness: str = 'AUTO', index
     
     
     response = requests.request("GET", URL_SEARCH[index], headers=headers, data=json.dumps(payload), auth=HTTPBasicAuth('elastic', 'sang'))
+    print(extract_ans(response.json()))
     return extract_ans(response.json())
 
 # print(advance_query("gim chua thit hai", fuzzyness='2', inorder=False, slop=2))
