@@ -15,8 +15,6 @@ def extract_ans(ans: dict):
     hits = ans['hits']['hits']
     results = list(map(lambda x: x['_source'], hits))
     lst_scores = [hit["_score"] for hit in hits]
-    if len(lst_scores) > 0:
-        lst_scores = (lst_scores-np.min(lst_scores))/(np.max(lst_scores)-np.min(lst_scores)+0.000001)
     
     for i, result in enumerate(results):
         result["score"] = lst_scores[i]
