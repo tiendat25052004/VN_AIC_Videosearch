@@ -29,13 +29,14 @@ def query_all_object(cursor, class_names: list, bottoms, tops, lefts, rights):
     JOIN class c ON tb.class_id = c.id
     WHERE c.id IN ({','.join(['%s'] * len(class_ids))}) AND ({where_clause})
     GROUP BY tb.frame_id
+    HAVING COUNT(DISTINCT c.name) >= %s
     """
     
     # Chuẩn bị tham số cho truy vấn
     params = []
     for i in range(len(class_ids)):
         params.extend([bottoms[i], tops[i], lefts[i], rights[i]])
-    # params.extend(class_ids)  # Các class_id
+    params.extend(class_ids)  # Các class_id
     params = class_ids + params
     
     print("Generated SQL Query:")
