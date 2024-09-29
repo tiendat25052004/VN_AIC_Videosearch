@@ -1,7 +1,7 @@
 import copy
 import numpy as np
 from utils.combine_utils import merge_searching_results_by_addition
-
+from utils.sql import handle_object_filter
 
 def group_result_by_video(lst_scores, list_ids, 
                           list_image_paths, KeyframesMapper,
@@ -95,7 +95,7 @@ def group_result_by_video_old(lst_scores, list_ids, list_image_paths, KeyframesM
 
     return result
 
-def filter_results(results, asr_results=None, ocr_results=None):
+def filter_results(results, asr_results=None, ocr_results=None, object_input=None):
     result_list = []
     if asr_results is not None:
         videos = [ f"{asr['L']}_{asr['V']}" for asr in asr_results]
@@ -115,9 +115,18 @@ def filter_results(results, asr_results=None, ocr_results=None):
                 score = scores[ocr_id.index(idx)]
                 pos = result["video_info"]["lst_idxs"].index(idx)
                 result["video_info"]["lst_scores"][pos] = result["video_info"]["lst_scores"][pos] + score/2
-    for result in results:
-        for path, idx, keyframe_idx, score in zip(result["video_info"]['lst_keyframe_paths'], result["video_info"]['lst_idxs'], result["video_info"]['lst_keyframe_idxs'], result["video_info"]['lst_scores']):
-            result_list.append({"id": idx, "keyframe_path": path, "keyframe_id": keyframe_idx, "score": score})
+    if object_input is not None:
+        object_filter = handle_object_filter(object_input)
+        for result in results:
+            for path, idx, keyframe_idx, score in zip(result["video_info"]['lst_keyframe_paths'], result["video_info"]['lst_idxs'], result["video_info"]['lst_keyframe_idxs'], result["video_info"]['lst_scores']):
+                if idx in object_filter:
+                    continue
+                result_list.append({"id": idx, "keyframe_path": path, "keyframe_id": keyframe_idx, "score": score})
+    else:
+        for result in results:
+            for path, idx, keyframe_idx, score in zip(result["video_info"]['lst_keyframe_paths'], result["video_info"]['lst_idxs'], result["video_info"]['lst_keyframe_idxs'], result["video_info"]['lst_scores']):
+                result_list.append({"id": idx, "keyframe_path": path, "keyframe_id": keyframe_idx, "score": score})
+            
     return sorted(result_list, key=lambda x: x["score"], reverse=True)
 
 def search_by_filter(prev_result, text_query, k, mode, model_type, range_filter, ignore_index, keep_index, Sceneid2info, DictImagePath, CosineFaiss, KeyframesMapper):
