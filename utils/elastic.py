@@ -17,7 +17,7 @@ def extract_ans(ans: dict):
     lst_scores = [hit["_score"] for hit in hits]
     
     for i, result in enumerate(results):
-        result["score"] = lst_scores[i]
+        result["score"] = lst_scores[i]/max(lst_scores)
     return results
     
 

@@ -221,11 +221,18 @@ def text_search():
                                                                             k=k, semantic=semantic, keyword=keyword, index=index, useid=None)
         lst_scores, list_ids = merge_searching_results_by_addition([lst_scores_sematic, lst_scores],
                                                                     [list_ids_sematic, list_ids])
-    data = group_result_by_video_old(
-        lst_scores, list_ids, list_image_paths, KeyframesMapper)
+        infos_query = list(map(CosineFaiss.id2img_fps.get, list(list_ids)))
+        list_image_paths = [info['image_path'] for info in infos_query]
+    
     
     if ocr_input is not None:
         ocr_result = advance_query(ocr_input, fuzzyness='2', inorder=False, slop=2, index="ocr")
+        ocr_id = [ocr["id"] for ocr in ocr_result]
+        scores = [ocr["score"] for ocr in ocr_result]
+        lst_scores, list_ids = merge_searching_results_by_addition([scores, lst_scores],
+                                                                    [ocr_id, list_ids])
+        infos_query = list(map(CosineFaiss.id2img_fps.get, list(list_ids)))
+        list_image_paths = [info['image_path'] for info in infos_query]
     else:
         ocr_result = None
     
@@ -262,7 +269,7 @@ def text_search():
     
     data = group_result_by_video_old(
         lst_scores, list_ids, list_image_paths, KeyframesMapper)
-    data = filter_results(data, asr_results=asr_result, ocr_results=ocr_result, object_input=object_input)
+    data = filter_results(data, asr_results=asr_result, object_input=object_input)
     return jsonify(data)
 
 

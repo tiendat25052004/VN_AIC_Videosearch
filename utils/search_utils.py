@@ -61,6 +61,7 @@ def group_result_by_video(lst_scores, list_ids,
 
     return result
 
+
 def group_result_by_video_old(lst_scores, list_ids, list_image_paths, KeyframesMapper):
     result_dict = dict()
     lst_scores = (lst_scores-np.min(lst_scores))/(np.max(lst_scores)-np.min(lst_scores)+0.000001)
@@ -95,7 +96,7 @@ def group_result_by_video_old(lst_scores, list_ids, list_image_paths, KeyframesM
 
     return result
 
-def filter_results(results, asr_results=None, ocr_results=None, object_input=[]):
+def filter_results(results, asr_results=None, object_input=[]):
     result_list = []
     if asr_results is not None:
         videos = [ f"{asr['L']}_{asr['V']}" for asr in asr_results]
@@ -105,16 +106,16 @@ def filter_results(results, asr_results=None, ocr_results=None, object_input=[])
                 score = scores[videos.index(result['video_id'])]
                 for i in range(len(result["video_info"]["lst_scores"])):
                     result["video_info"]["lst_scores"][i] = result["video_info"]["lst_scores"][i] + score
-    if ocr_results is not None:
-        ocr_id = [ocr["id"] for ocr in ocr_results]
-        scores = [ocr["score"] for ocr in ocr_results]
-        for result in results:
-            frame_id = set(result["video_info"]["lst_idxs"])
-            same_id = list(frame_id.intersection(set(ocr_id)))
-            for idx in same_id:
-                score = scores[ocr_id.index(idx)]
-                pos = result["video_info"]["lst_idxs"].index(idx)
-                result["video_info"]["lst_scores"][pos] = result["video_info"]["lst_scores"][pos] + score
+    # if ocr_results is not None:
+    #     ocr_id = [ocr["id"] for ocr in ocr_results]
+    #     scores = [ocr["score"] for ocr in ocr_results]
+    #     for result in results:
+    #         frame_id = set(result["video_info"]["lst_idxs"])
+    #         same_id = list(frame_id.intersection(set(ocr_id)))
+    #         for idx in same_id:
+    #             score = scores[ocr_id.index(idx)]
+    #             pos = result["video_info"]["lst_idxs"].index(idx)
+    #             result["video_info"]["lst_scores"][pos] = result["video_info"]["lst_scores"][pos] + score
     if len(object_input) > 0:
         object_filter = handle_object_filter(object_input)
         for result in results:
