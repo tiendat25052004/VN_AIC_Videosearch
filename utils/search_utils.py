@@ -127,7 +127,7 @@ def filter_results(results, asr_results=None, object_input=[]):
         for result in results:
             for path, idx, keyframe_idx, score in zip(result["video_info"]['lst_keyframe_paths'], result["video_info"]['lst_idxs'], result["video_info"]['lst_keyframe_idxs'], result["video_info"]['lst_scores']):
                 result_list.append({"id": idx, "keyframe_path": path, "keyframe_id": keyframe_idx, "score": score})
-    print(sorted(result_list, key=lambda x: x["score"], reverse=True))    
+    # print(sorted(result_list, key=lambda x: x["score"], reverse=True))    
     return sorted(result_list, key=lambda x: x["score"], reverse=True)
 
 def search_by_filter(prev_result, text_query, k, mode, model_type, range_filter, ignore_index, keep_index, Sceneid2info, DictImagePath, CosineFaiss, KeyframesMapper):
