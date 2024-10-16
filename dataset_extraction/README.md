@@ -1,8 +1,4 @@
 # Dataset extraction
-## Pipeline
-<p align="center" width="100%">
-    <img width="25%" src="../figs/data_preprocessing.jpg"> 
-</p>
 
 ## Data directory
 Prepare data directory as:
@@ -22,6 +18,6 @@ Prepare data directory as:
 - Keyframe extraction: [transnet](transnet/README.md)
 - Audio extraction: [audio](audio/README.md)
 - Metadata extraction: [metadata](metadata/README.md)
-- Clip features extraction:: [clip](clip/README.md)
+- Visual features extraction:: [visual_feature_encode](visual_feature_encode/README.md)
 - Run [create.ipynb](./create.ipynb) for bin generation
 - Run [data_preparation.ipynb](./data_preparation.ipynb)
